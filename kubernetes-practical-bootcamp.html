@@ -1,0 +1,3050 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="A practical, production-minded Kubernetes learning handbook with labs, troubleshooting, Helm, and a 30-day roadmap.">
+  <title>Kubernetes Practical Bootcamp</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f8f5;
+      --surface: #ffffff;
+      --ink: #1c2a24;
+      --muted: #53665c;
+      --line: #d9e5dd;
+      --green: #167653;
+      --green-soft: #e8f4ed;
+      --coral: #b94b35;
+      --code: #172a22;
+      --code-ink: #edf7f0;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 1.25rem; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .topline { height: 7px; background: linear-gradient(90deg, var(--green) 0 72%, #df8265 72% 100%); }
+    header { padding: 3.25rem 1.5rem 2.5rem; background: var(--surface); border-bottom: 1px solid var(--line); }
+    .header-inner, main { width: min(100% - 2rem, 1100px); margin: 0 auto; }
+    .eyebrow { margin: 0 0 .55rem; color: var(--green); font-size: .78rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+    header h1 { max-width: 850px; margin: 0; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.12; }
+    .dek { max-width: 780px; margin: 1rem 0 0; color: var(--muted); font-size: 1.08rem; }
+    .meta { display: flex; flex-wrap: wrap; gap: .55rem 1.25rem; margin-top: 1.25rem; color: var(--muted); font-size: .9rem; }
+    main { padding: 2rem 0 5rem; }
+    article { min-width: 0; }
+    h1, h2, h3, h4 { color: #15251d; line-height: 1.28; scroll-margin-top: 1rem; }
+    h1 { font-size: 2.2rem; }
+    h2 { margin-top: 3rem; padding-bottom: .55rem; border-bottom: 1px solid var(--line); font-size: 1.65rem; }
+    h3 { margin-top: 2rem; font-size: 1.24rem; }
+    h4 { margin-top: 1.5rem; font-size: 1.05rem; }
+    p, ul, ol { max-width: 84ch; }
+    a { color: var(--green); text-decoration-thickness: .08em; text-underline-offset: .18em; }
+    a:hover { color: var(--coral); }
+    .heading-anchor { margin-left: .45rem; opacity: 0; font-size: .75em; text-decoration: none; }
+    h2:hover .heading-anchor, h3:hover .heading-anchor, h4:hover .heading-anchor, .heading-anchor:focus { opacity: 1; }
+    li { margin: .25rem 0; padding-left: .15rem; }
+    li::marker { color: var(--green); }
+    blockquote { margin: 1.4rem 0; padding: .4rem 1.1rem; border-left: 4px solid #e18b6d; background: var(--green-soft); color: #34483d; }
+    blockquote p { margin: .55rem 0; }
+    hr { height: 1px; margin: 2.5rem 0; border: 0; background: var(--line); }
+    :not(pre) > code { padding: .12rem .34rem; border: 1px solid var(--line); border-radius: 4px; background: #edf3ef; color: #244a39; font: .9em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+    pre { max-width: 100%; margin: 1.2rem 0; padding: 1.1rem 1.25rem; overflow-x: auto; border: 1px solid #2d493a; border-radius: 6px; background: var(--code); color: var(--code-ink); line-height: 1.55; tab-size: 2; }
+    pre code { color: inherit; font: .9rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .table-wrap { margin: 1.2rem 0; overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { padding: .65rem .75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--green-soft); color: #1c4735; font-weight: 700; }
+    tbody tr:nth-child(even) { background: #f8fbf9; }
+    .contents { margin: 2rem 0 2.5rem; padding: 1.25rem 1.5rem; border: 1px solid var(--line); border-left: 4px solid var(--green); background: var(--surface); }
+    .contents h2 { margin: 0 0 .5rem; padding: 0; border: 0; font-size: 1.2rem; }
+    .contents ul { columns: 2; column-gap: 2rem; margin: .5rem 0 0; padding-left: 1.2rem; }
+    .contents li { break-inside: avoid; }
+    footer { padding: 1.5rem; border-top: 1px solid var(--line); background: var(--surface); color: var(--muted); text-align: center; font-size: .88rem; }
+    @media (max-width: 650px) {
+      body { font-size: 15px; }
+      header { padding: 2.25rem 1rem 1.75rem; }
+      .header-inner, main { width: min(100% - 1.25rem, 1100px); }
+      main { padding-top: 1.25rem; }
+      .contents ul { columns: 1; }
+      pre { padding: .9rem; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="topline" aria-hidden="true"></div>
+  <header>
+    <div class="header-inner">
+      <p class="eyebrow">Hands-on engineering handbook</p>
+      <h1>Kubernetes Practical Bootcamp</h1>
+      <p class="dek">Learn, build, break, debug, improve, and apply production-minded Kubernetes practices.</p>
+      <div class="meta"><span>20% theory</span><span>80% hands-on practice</span><span>Local-cluster friendly</span></div>
+    </div>
+  </header>
+  <main>
+    <article>
+      <h1 id="kubernetes-practical-bootcamp">Kubernetes Practical Bootcamp<a class="heading-anchor" href="#kubernetes-practical-bootcamp" aria-label="Link to Kubernetes Practical Bootcamp">#</a></h1>
+      <p>A fast, production-minded Kubernetes learning path for engineers who already know Docker, Spring Boot, REST APIs, Git, and CI/CD.</p>
+      <p>This course is optimized for:</p>
+      <ul>
+      <li>20% theory</li>
+      <li>80% hands-on practice</li>
+      <li>Learn → Build → Break → Debug → Improve → Apply best practices</li>
+      </ul>
+      <p>This file is intentionally written in a GitHub-friendly, browser-readable format so it renders well in HTML, Markdown preview, and GitHub. The structure is simple:</p>
+      <ul>
+      <li>one clear topic per section</li>
+      <li>headings for scanning</li>
+      <li>short blocks of explanation</li>
+      <li>command examples in fenced code blocks</li>
+      <li>quick-reference tables and checklists</li>
+      <li>good for commit history, PR review, and personal study notes</li>
+      </ul>
+      <h2 id="start-here">Start here<a class="heading-anchor" href="#start-here" aria-label="Link to Start here">#</a></h2>
+      <h3 id="what-you-will-learn">What you will learn<a class="heading-anchor" href="#what-you-will-learn" aria-label="Link to What you will learn">#</a></h3>
+      <p>By the end of this bootcamp, you should be able to deploy a containerized application, explain how Kubernetes routes and manages workloads, debug common failures from cluster evidence, and make informed production trade-offs.</p>
+      <h3 id="suggested-path">Suggested path<a class="heading-anchor" href="#suggested-path" aria-label="Link to Suggested path">#</a></h3>
+      <ol>
+      <li>Set up a local cluster with <code>kind</code> or Docker Desktop.</li>
+      <li>Work through the fundamentals and resource sections.</li>
+      <li>Deploy the sample full-stack architecture in small steps.</li>
+      <li>Break one part at a time and use events, logs, probes, and endpoints to find the cause.</li>
+      <li>Add security, observability, Helm, and CI/CD after the basic app works.</li>
+      </ol>
+      <h3 id="how-to-read-this-on-github">How to read this on GitHub<a class="heading-anchor" href="#how-to-read-this-on-github" aria-label="Link to How to read this on GitHub">#</a></h3>
+      <p>GitHub renders this Markdown as HTML. Use the table of contents below to jump to a topic; GitHub also adds a heading-link icon when you hover over section headings. Keep the <code>.md</code> file as the source so edits, diffs, and search remain convenient.</p>
+      <h2 id="table-of-contents">Table of contents<a class="heading-anchor" href="#table-of-contents" aria-label="Link to Table of contents">#</a></h2>
+      <ul>
+      <li><a href="#git-workflow-for-your-kubernetes-notes-repo">Git workflow</a></li>
+      <li><a href="#research-basis-and-source-quality">Research basis and source quality</a></li>
+      <li><a href="#how-to-use-this-course">How to use this course</a></li>
+      <li><a href="#phase-1--fundamentals">Phase 1: Fundamentals</a></li>
+      <li><a href="#core-kubernetes-resources">Core Kubernetes resources</a></li>
+      <li><a href="#kubectl-mastery">kubectl mastery</a></li>
+      <li><a href="#yaml--manifest-best-practices">YAML and manifest best practices</a></li>
+      <li><a href="#networking">Networking</a></li>
+      <li><a href="#configuration--secrets">Configuration and secrets</a></li>
+      <li><a href="#resource-management">Resource management</a></li>
+      <li><a href="#health-checks">Health checks</a></li>
+      <li><a href="#scaling--reliability">Scaling and reliability</a></li>
+      <li><a href="#security-best-practices">Security best practices</a></li>
+      <li><a href="#kubernetes-production-best-practices">Kubernetes production best practices</a></li>
+      <li><a href="#build-one-real-project">Build one real project</a></li>
+      <li><a href="#break-things-intentionally">Break things intentionally</a></li>
+      <li><a href="#local-kubernetes-environment">Local Kubernetes environment</a></li>
+      <li><a href="#helm">Helm</a></li>
+      <li><a href="#cicd">CI/CD</a></li>
+      <li><a href="#observability">Observability</a></li>
+      <li><a href="#best-practice-review-checklist">Best-practice review checklist</a></li>
+      <li><a href="#final-capstone-challenge">Final capstone challenge</a></li>
+      <li><a href="#30-day-learning-roadmap">30-day learning roadmap</a></li>
+      <li><a href="#final-mindset">Final mindset</a></li>
+      <li><a href="#recommended-next-steps">Recommended next steps</a></li>
+      </ul>
+      <hr>
+      <h2 id="git-workflow-for-your-kubernetes-notes-repo">Git workflow for your Kubernetes notes repo<a class="heading-anchor" href="#git-workflow-for-your-kubernetes-notes-repo" aria-label="Link to Git workflow for your Kubernetes notes repo">#</a></h2>
+      <p>This is the practical flow I recommend while learning Kubernetes and keeping your notes in Git.</p>
+      <h3 id="1-create-the-repo">1. Create the repo<a class="heading-anchor" href="#1-create-the-repo" aria-label="Link to 1. Create the repo">#</a></h3>
+      <pre><code class="language-bash">mkdir kubernetes-learning
+      cd kubernetes-learning
+      git init
+      git branch -M main
+      </code></pre>
+      <h3 id="2-add-your-notes">2. Add your notes<a class="heading-anchor" href="#2-add-your-notes" aria-label="Link to 2. Add your notes">#</a></h3>
+      <pre><code class="language-bash">touch kubernetes-practical-bootcamp.md
+      git status
+      git add kubernetes-practical-bootcamp.md
+      git commit -m &quot;Add Kubernetes practical bootcamp notes&quot;
+      </code></pre>
+      <h3 id="3-push-to-github">3. Push to GitHub<a class="heading-anchor" href="#3-push-to-github" aria-label="Link to 3. Push to GitHub">#</a></h3>
+      <pre><code class="language-bash">git remote add origin git@github.com:YOUR_USERNAME/kubernetes-learning.git
+      git push -u origin main
+      </code></pre>
+      <p>If you use HTTPS instead:</p>
+      <pre><code class="language-bash">git remote add origin https://github.com/YOUR_USERNAME/kubernetes-learning.git
+      git push -u origin main
+      </code></pre>
+      <h3 id="4-pull-updates-later">4. Pull updates later<a class="heading-anchor" href="#4-pull-updates-later" aria-label="Link to 4. Pull updates later">#</a></h3>
+      <pre><code class="language-bash">git pull --ff-only origin main
+      </code></pre>
+      <h3 id="5-create-a-feature-branch-for-a-new-topic">5. Create a feature branch for a new topic<a class="heading-anchor" href="#5-create-a-feature-branch-for-a-new-topic" aria-label="Link to 5. Create a feature branch for a new topic">#</a></h3>
+      <pre><code class="language-bash">git checkout -b add-helm-section
+      # make edits
+      git add .
+      git commit -m &quot;Add Helm section&quot;
+      git push -u origin add-helm-section
+      </code></pre>
+      <h3 id="6-keep-your-notes-clean">6. Keep your notes clean<a class="heading-anchor" href="#6-keep-your-notes-clean" aria-label="Link to 6. Keep your notes clean">#</a></h3>
+      <pre><code class="language-bash">git status
+      git diff
+      git log --oneline --decorate --graph --all
+      </code></pre>
+      <h3 id="7-good-repo-practices">7. Good repo practices<a class="heading-anchor" href="#7-good-repo-practices" aria-label="Link to 7. Good repo practices">#</a></h3>
+      <ul>
+      <li>keep each topic in its own commit</li>
+      <li>use descriptive commit messages</li>
+      <li>store notes in Markdown for GitHub readability</li>
+      <li>add a <code>.gitignore</code> if you keep local cluster artifacts or generated files</li>
+      <li>avoid committing secrets or cloud credentials</li>
+      </ul>
+      <h3 id="8-recommended-gitignore">8. Recommended <code>.gitignore</code><a class="heading-anchor" href="#8-recommended-gitignore" aria-label="Link to 8. Recommended `.gitignore`">#</a></h3>
+      <pre><code class="language-gitignore">.DS_Store
+      .env
+      *.log
+      tmp/
+      local-cluster/
+      secrets/
+      </code></pre>
+      <h3 id="9-github-first-learning-workflow">9. GitHub-first learning workflow<a class="heading-anchor" href="#9-github-first-learning-workflow" aria-label="Link to 9. GitHub-first learning workflow">#</a></h3>
+      <p>Use a simple pattern:</p>
+      <ol>
+      <li>learn a concept</li>
+      <li>write a short note or example</li>
+      <li>commit it</li>
+      <li>push it to GitHub</li>
+      <li>review it in browser</li>
+      <li>improve it based on what you learned</li>
+      </ol>
+      <p>This keeps your knowledge searchable, versioned, and easy to revisit.</p>
+      <blockquote><p>Markdown is especially good for GitHub because GitHub automatically renders it to HTML, making it readable in the browser while staying easy to edit and track in Git.</p></blockquote>
+      <hr>
+      <h2 id="research-basis-and-source-quality">Research basis and source quality<a class="heading-anchor" href="#research-basis-and-source-quality" aria-label="Link to Research basis and source quality">#</a></h2>
+      <p>This course is grounded in current Kubernetes documentation and widely used engineering references. The emphasis is on what is recommended today, not old blog advice.</p>
+      <p>Primary sources used:</p>
+      <ul>
+      <li>Kubernetes official docs: <a href="https://kubernetes.io/docs/">https://kubernetes.io/docs/</a></li>
+      <li>Kubernetes concepts: <a href="https://kubernetes.io/docs/concepts/">https://kubernetes.io/docs/concepts/</a></li>
+      <li>Kubernetes tasks and tutorials: <a href="https://kubernetes.io/docs/tasks/">https://kubernetes.io/docs/tasks/</a></li>
+      <li>CNCF Kubernetes resources and ecosystem guidance: <a href="https://www.cncf.io/">https://www.cncf.io/</a></li>
+      <li>Kubernetes API reference and networking docs</li>
+      </ul>
+      <p>Important distinctions:</p>
+      <h3 id="kubernetes-fundamentals">Kubernetes fundamentals<a class="heading-anchor" href="#kubernetes-fundamentals" aria-label="Link to Kubernetes fundamentals">#</a></h3>
+      <p>These are stable, core concepts that are foundational and should be understood deeply:</p>
+      <ul>
+      <li>containers vs Kubernetes</li>
+      <li>cluster architecture</li>
+      <li>control plane vs worker nodes</li>
+      <li>Pods, Deployments, Services, Namespaces, ConfigMaps, Secrets</li>
+      <li>labels, selectors, networking, health checks, resource requests/limits</li>
+      </ul>
+      <h3 id="recommended-practices">Recommended practices<a class="heading-anchor" href="#recommended-practices" aria-label="Link to Recommended practices">#</a></h3>
+      <p>These are the patterns most teams should adopt:</p>
+      <ul>
+      <li>Deployments for stateless workloads</li>
+      <li>Services to abstract Pods</li>
+      <li>readiness and liveness probes for reliability</li>
+      <li>ConfigMaps for non-sensitive config</li>
+      <li>Secrets for sensitive config</li>
+      <li>resource requests and limits</li>
+      <li>rolling updates with health checks</li>
+      <li>labels and namespaces for organization and policy</li>
+      </ul>
+      <h3 id="production-best-practices">Production best practices<a class="heading-anchor" href="#production-best-practices" aria-label="Link to Production best practices">#</a></h3>
+      <p>These are what matter in real environments:</p>
+      <ul>
+      <li>least privilege RBAC</li>
+      <li>network policy isolation</li>
+      <li>multi-replica workloads and pod disruption handling</li>
+      <li>health-probe-driven rollouts</li>
+      <li>graceful shutdown</li>
+      <li>external secret management and secret rotation</li>
+      <li>observability, metrics, logs, events</li>
+      <li>GitOps or declarative manifests in version control</li>
+      </ul>
+      <h3 id="optional-or-advanced-practices">Optional or advanced practices<a class="heading-anchor" href="#optional-or-advanced-practices" aria-label="Link to Optional or advanced practices">#</a></h3>
+      <p>These are useful but not required for beginners:</p>
+      <ul>
+      <li>Helm for packaging</li>
+      <li>Gateway API for advanced networking</li>
+      <li>autoscaling strategies (HPA, VPA)</li>
+      <li>admission policies</li>
+      <li>service meshes</li>
+      <li>custom resource definitions and operators</li>
+      </ul>
+      <h3 id="outdated-or-no-longer-recommended">Outdated or no longer recommended<a class="heading-anchor" href="#outdated-or-no-longer-recommended" aria-label="Link to Outdated or no longer recommended">#</a></h3>
+      <p>These are things learners should know to avoid:</p>
+      <ul>
+      <li>managing Pods directly in production instead of using workload controllers</li>
+      <li>using NodePort for public internet exposure where Ingress or a cloud LB is cleaner</li>
+      <li>hardcoding secrets into container images or manifests</li>
+      <li>using <code>externalIPs</code> as a normal production pattern (deprecated in newer Kubernetes guidance)</li>
+      <li>relying on <code>kubectl --record</code> for change cause history (deprecated)</li>
+      <li>using a single replica for critical workloads when availability matters</li>
+      <li>ignoring labels/selectors and creating overlapping controllers</li>
+      <li>exposing everything publicly just because it is easy</li>
+      </ul>
+      <hr>
+      <h2 id="how-to-use-this-course">How to use this course<a class="heading-anchor" href="#how-to-use-this-course" aria-label="Link to How to use this course">#</a></h2>
+      <p>Read each section in order.</p>
+      <p>For every major concept, follow this pattern:</p>
+      <p>Concept ↓ Simple explanation ↓ How it works internally ↓ Real-world use case ↓ Hands-on practice ↓ Common mistakes ↓ Best practices</p>
+      <p>This is how you build engineering intuition instead of memorizing terms.</p>
+      <hr>
+      <h1 id="phase-1--fundamentals">Phase 1 — Fundamentals<a class="heading-anchor" href="#phase-1--fundamentals" aria-label="Link to Phase 1 — Fundamentals">#</a></h1>
+      <h2 id="1-what-kubernetes-solves">1. What Kubernetes solves<a class="heading-anchor" href="#1-what-kubernetes-solves" aria-label="Link to 1. What Kubernetes solves">#</a></h2>
+      <h3 id="simple-explanation">Simple explanation<a class="heading-anchor" href="#simple-explanation" aria-label="Link to Simple explanation">#</a></h3>
+      <p>Kubernetes is a container orchestration platform. It schedules containers onto nodes, keeps workloads available, scales them, handles rolling updates, and restarts failed containers.</p>
+      <h3 id="how-it-works-internally">How it works internally<a class="heading-anchor" href="#how-it-works-internally" aria-label="Link to How it works internally">#</a></h3>
+      <p>The control plane continuously compares the desired state in the cluster API with the actual state of running Pods and workloads. Controller loops reconcile differences and drive the cluster toward the desired state.</p>
+      <h3 id="real-world-use-case">Real-world use case<a class="heading-anchor" href="#real-world-use-case" aria-label="Link to Real-world use case">#</a></h3>
+      <p>A Spring Boot API runs in a container. Kubernetes ensures:</p>
+      <ul>
+      <li>it starts on a healthy node</li>
+      <li>it gets restarted if it fails</li>
+      <li>it gets traffic through a Service</li>
+      <li>multiple replicas are kept running</li>
+      <li>rollouts can happen without downtime</li>
+      </ul>
+      <h3 id="hands-on-practice">Hands-on practice<a class="heading-anchor" href="#hands-on-practice" aria-label="Link to Hands-on practice">#</a></h3>
+      <p>Start with a simple cluster and run a sample app:</p>
+      <pre><code class="language-bash">kubectl version --client --output=yaml
+      kubectl get nodes
+      kubectl get pods -A
+      </code></pre>
+      <h3 id="common-mistakes">Common mistakes<a class="heading-anchor" href="#common-mistakes" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>thinking Kubernetes is a deployment tool only</li>
+      <li>treating it like Docker Compose on steroids</li>
+      <li>assuming Pods are durable and stable</li>
+      </ul>
+      <h3 id="best-practices">Best practices<a class="heading-anchor" href="#best-practices" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>learn the control plane + node model first</li>
+      <li>use declarative YAML and <code>kubectl apply</code></li>
+      <li>prefer workload controllers over manual Pods</li>
+      </ul>
+      <hr>
+      <h2 id="2-containers-vs-kubernetes">2. Containers vs Kubernetes<a class="heading-anchor" href="#2-containers-vs-kubernetes" aria-label="Link to 2. Containers vs Kubernetes">#</a></h2>
+      <h3 id="simple-explanation-1">Simple explanation<a class="heading-anchor" href="#simple-explanation-1" aria-label="Link to Simple explanation">#</a></h3>
+      <p>Containers package an app and its runtime. Kubernetes manages many containers across many machines.</p>
+      <h3 id="how-it-works-internally-1">How it works internally<a class="heading-anchor" href="#how-it-works-internally-1" aria-label="Link to How it works internally">#</a></h3>
+      <p>Containers share the OS kernel of a node. Kubernetes schedules those containers into Pods, which are the smallest deployable unit.</p>
+      <h3 id="real-world-use-case-1">Real-world use case<a class="heading-anchor" href="#real-world-use-case-1" aria-label="Link to Real-world use case">#</a></h3>
+      <p>You build one container image for your backend. Kubernetes runs multiple copies of that image behind a Service.</p>
+      <h3 id="hands-on-practice-1">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-1" aria-label="Link to Hands-on practice">#</a></h3>
+      <p>Compare:</p>
+      <pre><code class="language-bash">docker run -d -p 8080:8080 my-image
+      </code></pre>
+      <p>vs:</p>
+      <pre><code class="language-bash">kubectl run demo --image=my-image --port=8080
+      kubectl get pods
+      </code></pre>
+      <h3 id="common-mistakes-1">Common mistakes<a class="heading-anchor" href="#common-mistakes-1" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>assuming a container directly equals a Kubernetes workload</li>
+      <li>using Kubernetes without understanding the difference between a container and a Pod</li>
+      </ul>
+      <h3 id="best-practices-1">Best practices<a class="heading-anchor" href="#best-practices-1" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>keep container images small and immutable</li>
+      <li>separate build-time concerns from runtime config</li>
+      <li>run one concern per container when appropriate</li>
+      </ul>
+      <hr>
+      <h2 id="3-kubernetes-architecture">3. Kubernetes architecture<a class="heading-anchor" href="#3-kubernetes-architecture" aria-label="Link to 3. Kubernetes architecture">#</a></h2>
+      <h3 id="simple-explanation-2">Simple explanation<a class="heading-anchor" href="#simple-explanation-2" aria-label="Link to Simple explanation">#</a></h3>
+      <p>A Kubernetes cluster has a control plane and worker nodes.</p>
+      <h3 id="how-it-works-internally-2">How it works internally<a class="heading-anchor" href="#how-it-works-internally-2" aria-label="Link to How it works internally">#</a></h3>
+      <p>Control plane components include:</p>
+      <ul>
+      <li>kube-apiserver</li>
+      <li>etcd</li>
+      <li>kube-scheduler</li>
+      <li>kube-controller-manager</li>
+      <li>cloud-controller-manager (when used)</li>
+      </ul>
+      <p>Worker nodes run:</p>
+      <ul>
+      <li>kubelet</li>
+      <li>kube-proxy</li>
+      <li>container runtime</li>
+      </ul>
+      <h3 id="real-world-use-case-2">Real-world use case<a class="heading-anchor" href="#real-world-use-case-2" aria-label="Link to Real-world use case">#</a></h3>
+      <p>The API server receives desired state. The scheduler decides placement. The kubelet ensures containers run. The controller manager reconciles desired vs actual.</p>
+      <h3 id="hands-on-practice-2">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-2" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-bash">kubectl get componentstatuses
+      kubectl get nodes -o wide
+      kubectl get pods -A
+      </code></pre>
+      <h3 id="common-mistakes-2">Common mistakes<a class="heading-anchor" href="#common-mistakes-2" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>trying to operate Kubernetes without understanding control plane responsibilities</li>
+      <li>ignoring that scheduling and health are separate concerns</li>
+      </ul>
+      <h3 id="best-practices-2">Best practices<a class="heading-anchor" href="#best-practices-2" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>understand node capacity, taints, tolerations, and scheduling behavior</li>
+      <li>know which layer owns what before debugging a failure</li>
+      </ul>
+      <hr>
+      <h2 id="4-cluster">4. Cluster<a class="heading-anchor" href="#4-cluster" aria-label="Link to 4. Cluster">#</a></h2>
+      <h3 id="simple-explanation-3">Simple explanation<a class="heading-anchor" href="#simple-explanation-3" aria-label="Link to Simple explanation">#</a></h3>
+      <p>A cluster is a set of machines that run containerized workloads under Kubernetes control.</p>
+      <h3 id="how-it-works-internally-3">How it works internally<a class="heading-anchor" href="#how-it-works-internally-3" aria-label="Link to How it works internally">#</a></h3>
+      <p>Nodes join the cluster and report capacity. The scheduler places Pods according to resources, taints, affinity, and other policy.</p>
+      <h3 id="real-world-use-case-3">Real-world use case<a class="heading-anchor" href="#real-world-use-case-3" aria-label="Link to Real-world use case">#</a></h3>
+      <p>Development cluster, staging cluster, production cluster.</p>
+      <h3 id="hands-on-practice-3">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-3" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-bash">kubectl get nodes
+      kubectl describe node &lt;node-name&gt;
+      </code></pre>
+      <h3 id="common-mistakes-3">Common mistakes<a class="heading-anchor" href="#common-mistakes-3" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>assuming a single node is enough for production</li>
+      <li>ignoring resource fragmentation and node-level constraints</li>
+      </ul>
+      <h3 id="best-practices-3">Best practices<a class="heading-anchor" href="#best-practices-3" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>keep cluster topology clear</li>
+      <li>understand failure domains and node pools</li>
+      <li>track capacity and autoscaling</li>
+      </ul>
+      <hr>
+      <h2 id="5-control-plane">5. Control plane<a class="heading-anchor" href="#5-control-plane" aria-label="Link to 5. Control plane">#</a></h2>
+      <h3 id="simple-explanation-4">Simple explanation<a class="heading-anchor" href="#simple-explanation-4" aria-label="Link to Simple explanation">#</a></h3>
+      <p>The control plane is the brain of the cluster.</p>
+      <h3 id="how-it-works-internally-4">How it works internally<a class="heading-anchor" href="#how-it-works-internally-4" aria-label="Link to How it works internally">#</a></h3>
+      <p>It stores desired state in etcd and acts through controllers and the API server.</p>
+      <h3 id="real-world-use-case-4">Real-world use case<a class="heading-anchor" href="#real-world-use-case-4" aria-label="Link to Real-world use case">#</a></h3>
+      <p>When you run <code>kubectl apply -f deployment.yaml</code>, the API server receives the desired state and controllers reconcile it.</p>
+      <h3 id="hands-on-practice-4">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-4" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-bash">kubectl get all -A
+      kubectl get deployment -A
+      kubectl get endpointslices -A
+      </code></pre>
+      <h3 id="common-mistakes-4">Common mistakes<a class="heading-anchor" href="#common-mistakes-4" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>exposing the control plane publicly without protection</li>
+      <li>using cluster-admin credentials for routine work</li>
+      </ul>
+      <h3 id="best-practices-4">Best practices<a class="heading-anchor" href="#best-practices-4" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>lock down API access</li>
+      <li>limit admin permissions</li>
+      <li>separate cluster responsibilities from workload access</li>
+      </ul>
+      <hr>
+      <h2 id="6-worker-nodes">6. Worker nodes<a class="heading-anchor" href="#6-worker-nodes" aria-label="Link to 6. Worker nodes">#</a></h2>
+      <h3 id="simple-explanation-5">Simple explanation<a class="heading-anchor" href="#simple-explanation-5" aria-label="Link to Simple explanation">#</a></h3>
+      <p>Nodes run your Pods.</p>
+      <h3 id="how-it-works-internally-5">How it works internally<a class="heading-anchor" href="#how-it-works-internally-5" aria-label="Link to How it works internally">#</a></h3>
+      <p>The kubelet supervises Pod lifecycle on each node. kube-proxy configures networking and routing for Services.</p>
+      <h3 id="real-world-use-case-5">Real-world use case<a class="heading-anchor" href="#real-world-use-case-5" aria-label="Link to Real-world use case">#</a></h3>
+      <p>A node fails, Pods are rescheduled, and the cluster self-heals.</p>
+      <h3 id="hands-on-practice-5">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-5" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-bash">kubectl get nodes -o custom-columns=NAME:.metadata.name,STATUS:.status.conditions[3].status,VERSION:.status.nodeInfo.kubeletVersion
+      </code></pre>
+      <h3 id="common-mistakes-5">Common mistakes<a class="heading-anchor" href="#common-mistakes-5" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>overloading nodes with too many workloads</li>
+      <li>ignoring node pressure and eviction behavior</li>
+      </ul>
+      <h3 id="best-practices-5">Best practices<a class="heading-anchor" href="#best-practices-5" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>define resource requests and limits</li>
+      <li>use multi-node capacity for resilience</li>
+      <li>watch node pressure and OOM behavior</li>
+      </ul>
+      <hr>
+      <h2 id="7-pods">7. Pods<a class="heading-anchor" href="#7-pods" aria-label="Link to 7. Pods">#</a></h2>
+      <h3 id="simple-explanation-6">Simple explanation<a class="heading-anchor" href="#simple-explanation-6" aria-label="Link to Simple explanation">#</a></h3>
+      <p>A Pod is the smallest deployable unit. One Pod can contain one or more containers sharing network and storage.</p>
+      <h3 id="how-it-works-internally-6">How it works internally<a class="heading-anchor" href="#how-it-works-internally-6" aria-label="Link to How it works internally">#</a></h3>
+      <p>Containers in the same Pod share a network namespace and can talk via <code>localhost</code>. Kubernetes treats the Pod as a unit.</p>
+      <h3 id="real-world-use-case-6">Real-world use case<a class="heading-anchor" href="#real-world-use-case-6" aria-label="Link to Real-world use case">#</a></h3>
+      <p>A backend service deployed as a single container in one Pod, or a sidecar pattern for logs or proxies.</p>
+      <h3 id="hands-on-practice-6">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-6" aria-label="Link to Hands-on practice">#</a></h3>
+      <p>Create a simple Pod:</p>
+      <pre><code class="language-yaml">apiVersion: v1
+      kind: Pod
+      metadata:
+        name: hello-pod
+      spec:
+        containers:
+          - name: hello
+            image: nginx:stable
+            ports:
+              - containerPort: 80
+      </code></pre>
+      <pre><code class="language-bash">kubectl apply -f hello-pod.yaml
+      kubectl get pod hello-pod -o wide
+      kubectl logs hello-pod
+      kubectl describe pod hello-pod
+      </code></pre>
+      <h3 id="common-mistakes-6">Common mistakes<a class="heading-anchor" href="#common-mistakes-6" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>creating Pods directly in production</li>
+      <li>using one Pod to represent a whole app when it should be a Deployment</li>
+      </ul>
+      <h3 id="best-practices-6">Best practices<a class="heading-anchor" href="#best-practices-6" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>most workloads should use Deployments, not direct Pods</li>
+      <li>keep one concern per Pod when possible</li>
+      <li>set resource requests and limits</li>
+      </ul>
+      <hr>
+      <h2 id="8-deployments">8. Deployments<a class="heading-anchor" href="#8-deployments" aria-label="Link to 8. Deployments">#</a></h2>
+      <h3 id="simple-explanation-7">Simple explanation<a class="heading-anchor" href="#simple-explanation-7" aria-label="Link to Simple explanation">#</a></h3>
+      <p>A Deployment manages a set of identical Pods and keeps them aligned with a desired state.</p>
+      <h3 id="how-it-works-internally-7">How it works internally<a class="heading-anchor" href="#how-it-works-internally-7" aria-label="Link to How it works internally">#</a></h3>
+      <p>The Deployment controller creates a ReplicaSet. The ReplicaSet creates Pods. The Deployment rolls out updates by creating a new ReplicaSet and scaling old ones down.</p>
+      <h3 id="real-world-use-case-7">Real-world use case<a class="heading-anchor" href="#real-world-use-case-7" aria-label="Link to Real-world use case">#</a></h3>
+      <p>Deploy your Spring Boot API with 3 replicas behind a Service.</p>
+      <h3 id="hands-on-practice-7">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-7" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: backend
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            app: backend
+        template:
+          metadata:
+            labels:
+              app: backend
+          spec:
+            containers:
+              - name: backend
+                image: ghcr.io/example/backend:1.0.0
+                ports:
+                  - containerPort: 8080
+                readinessProbe:
+                  httpGet:
+                    path: /actuator/health/readiness
+                    port: 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+      </code></pre>
+      <pre><code class="language-bash">kubectl apply -f backend-deployment.yaml
+      kubectl rollout status deployment/backend
+      kubectl get rs
+      kubectl get pods -l app=backend
+      </code></pre>
+      <h3 id="common-mistakes-7">Common mistakes<a class="heading-anchor" href="#common-mistakes-7" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>not setting selector labels correctly</li>
+      <li>overlapping selectors between controllers</li>
+      <li>creating a Deployment without readiness checks</li>
+      </ul>
+      <h3 id="best-practices-7">Best practices<a class="heading-anchor" href="#best-practices-7" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>use Deployments for stateless workloads</li>
+      <li>keep pod template labels consistent and meaningful</li>
+      <li>use rolling updates and probe-based health</li>
+      </ul>
+      <hr>
+      <h2 id="9-replicasets">9. ReplicaSets<a class="heading-anchor" href="#9-replicasets" aria-label="Link to 9. ReplicaSets">#</a></h2>
+      <h3 id="simple-explanation-8">Simple explanation<a class="heading-anchor" href="#simple-explanation-8" aria-label="Link to Simple explanation">#</a></h3>
+      <p>ReplicaSets ensure a desired number of Pods are running.</p>
+      <h3 id="how-it-works-internally-8">How it works internally<a class="heading-anchor" href="#how-it-works-internally-8" aria-label="Link to How it works internally">#</a></h3>
+      <p>They continuously watch their selector and create or delete Pods to reach the target count.</p>
+      <h3 id="real-world-use-case-8">Real-world use case<a class="heading-anchor" href="#real-world-use-case-8" aria-label="Link to Real-world use case">#</a></h3>
+      <p>A Deployment creates and owns the ReplicaSet; you usually do not manage ReplicaSets directly.</p>
+      <h3 id="hands-on-practice-8">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-8" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-bash">kubectl get rs -A
+      kubectl describe rs &lt;replicaset-name&gt;
+      </code></pre>
+      <h3 id="common-mistakes-8">Common mistakes<a class="heading-anchor" href="#common-mistakes-8" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>editing ReplicaSets directly instead of changing the Deployment</li>
+      <li>overlapping selectors across multiple controllers</li>
+      </ul>
+      <h3 id="best-practices-8">Best practices<a class="heading-anchor" href="#best-practices-8" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>let Deployments own ReplicaSets automatically</li>
+      <li>avoid manual management of child controllers</li>
+      </ul>
+      <hr>
+      <h2 id="10-services">10. Services<a class="heading-anchor" href="#10-services" aria-label="Link to 10. Services">#</a></h2>
+      <h3 id="simple-explanation-9">Simple explanation<a class="heading-anchor" href="#simple-explanation-9" aria-label="Link to Simple explanation">#</a></h3>
+      <p>A Service gives stable network identity to a set of Pods.</p>
+      <h3 id="how-it-works-internally-9">How it works internally<a class="heading-anchor" href="#how-it-works-internally-9" aria-label="Link to How it works internally">#</a></h3>
+      <p>A Service selects Pods by labels and creates internal routing rules. The cluster updates endpoints as Pods change.</p>
+      <h3 id="real-world-use-case-9">Real-world use case<a class="heading-anchor" href="#real-world-use-case-9" aria-label="Link to Real-world use case">#</a></h3>
+      <p>Frontend calls <code>http://backend.default.svc.cluster.local</code> even though actual backend Pod IPs change over time.</p>
+      <h3 id="hands-on-practice-9">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-9" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: v1
+      kind: Service
+      metadata:
+        name: backend
+      spec:
+        selector:
+          app: backend
+        ports:
+          - name: http
+            port: 8080
+            targetPort: 8080
+            protocol: TCP
+      </code></pre>
+      <pre><code class="language-bash">kubectl apply -f backend-service.yaml
+      kubectl get svc
+      kubectl get endpoints backend
+      </code></pre>
+      <h3 id="common-mistakes-9">Common mistakes<a class="heading-anchor" href="#common-mistakes-9" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>targeting wrong label selector</li>
+      <li>using Pod IPs directly instead of a Service</li>
+      <li>forgetting that Services are stable names, not fixed Pods</li>
+      </ul>
+      <h3 id="best-practices-9">Best practices<a class="heading-anchor" href="#best-practices-9" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>prefer Services over hardcoded Pod IPs</li>
+      <li>use ClusterIP by default</li>
+      <li>use Ingress or cloud LB only for external entry points</li>
+      </ul>
+      <hr>
+      <h2 id="11-namespaces">11. Namespaces<a class="heading-anchor" href="#11-namespaces" aria-label="Link to 11. Namespaces">#</a></h2>
+      <h3 id="simple-explanation-10">Simple explanation<a class="heading-anchor" href="#simple-explanation-10" aria-label="Link to Simple explanation">#</a></h3>
+      <p>Namespaces divide cluster resources into logical groups.</p>
+      <h3 id="how-it-works-internally-10">How it works internally<a class="heading-anchor" href="#how-it-works-internally-10" aria-label="Link to How it works internally">#</a></h3>
+      <p>Each resource exists in a namespace unless cluster-scoped. It helps isolate workloads and RBAC.</p>
+      <h3 id="real-world-use-case-10">Real-world use case<a class="heading-anchor" href="#real-world-use-case-10" aria-label="Link to Real-world use case">#</a></h3>
+      <p><code>dev</code>, <code>staging</code>, <code>prod</code>, <code>platform-system</code>.</p>
+      <h3 id="hands-on-practice-10">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-10" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-bash">kubectl create namespace dev
+      kubectl get ns
+      kubectl get pods -n dev
+      </code></pre>
+      <h3 id="common-mistakes-10">Common mistakes<a class="heading-anchor" href="#common-mistakes-10" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>putting all workloads in <code>default</code></li>
+      <li>mixing production and non-production resources</li>
+      <li>unclear ownership boundaries</li>
+      </ul>
+      <h3 id="best-practices-10">Best practices<a class="heading-anchor" href="#best-practices-10" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>separate environments by namespace</li>
+      <li>use RBAC per namespace</li>
+      <li>keep consistent naming and ownership conventions</li>
+      </ul>
+      <hr>
+      <h2 id="12-labels-and-selectors">12. Labels and selectors<a class="heading-anchor" href="#12-labels-and-selectors" aria-label="Link to 12. Labels and selectors">#</a></h2>
+      <h3 id="simple-explanation-11">Simple explanation<a class="heading-anchor" href="#simple-explanation-11" aria-label="Link to Simple explanation">#</a></h3>
+      <p>Labels are metadata; selectors choose matching Pods or resources.</p>
+      <h3 id="how-it-works-internally-11">How it works internally<a class="heading-anchor" href="#how-it-works-internally-11" aria-label="Link to How it works internally">#</a></h3>
+      <p>Controllers and Services read labels and select matching resources.</p>
+      <h3 id="real-world-use-case-11">Real-world use case<a class="heading-anchor" href="#real-world-use-case-11" aria-label="Link to Real-world use case">#</a></h3>
+      <p>All backend Pods have <code>app: backend</code> and a Service selector chooses them.</p>
+      <h3 id="hands-on-practice-11">Hands-on practice<a class="heading-anchor" href="#hands-on-practice-11" aria-label="Link to Hands-on practice">#</a></h3>
+      <pre><code class="language-yaml">metadata:
+        labels:
+          app: backend
+          tier: api
+          env: prod
+      </code></pre>
+      <pre><code class="language-bash">kubectl get pods -l app=backend
+      kubectl get pods -l &#39;app=backend,env=prod&#39;
+      </code></pre>
+      <h3 id="common-mistakes-11">Common mistakes<a class="heading-anchor" href="#common-mistakes-11" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>inconsistent labels across templates</li>
+      <li>duplicated or overlapping selectors</li>
+      <li>labels chosen without meaning</li>
+      </ul>
+      <h3 id="best-practices-11">Best practices<a class="heading-anchor" href="#best-practices-11" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>keep label keys consistent and predictable</li>
+      <li>use labels for versions, app, environment, tier, managed-by</li>
+      <li>avoid labels that rapidly change in production</li>
+      </ul>
+      <hr>
+      <h1 id="core-kubernetes-resources">Core Kubernetes resources<a class="heading-anchor" href="#core-kubernetes-resources" aria-label="Link to Core Kubernetes resources">#</a></h1>
+      <h2 id="resource-guide">Resource guide<a class="heading-anchor" href="#resource-guide" aria-label="Link to Resource guide">#</a></h2>
+      <div class="table-wrap"><table><thead><tr>
+      <th>Resource</th>
+      <th>What it is</th>
+      <th>Why it exists</th>
+      <th>Use it when</th>
+      <th>Not for</th>
+      <th>Key fields</th>
+      <th>Best practices</th>
+      </tr></thead><tbody>
+      <tr>
+      <td>Pod</td>
+      <td>smallest deployable unit</td>
+      <td>runs container(s)</td>
+      <td>single process or tightly coupled set</td>
+      <td>long-lived manual management</td>
+      <td>metadata, spec, containers</td>
+      <td>rarely manage directly in prod</td>
+      </tr>
+      <tr>
+      <td>Deployment</td>
+      <td>desired state controller</td>
+      <td>scales and updates Pods</td>
+      <td>stateless apps</td>
+      <td>stateful workloads</td>
+      <td>replicas, selector, template</td>
+      <td>use rolling updates with probes</td>
+      </tr>
+      <tr>
+      <td>ReplicaSet</td>
+      <td>ensures desired replica count</td>
+      <td>maintains Pod count</td>
+      <td>child of Deployment</td>
+      <td>direct admin</td>
+      <td>selector, replicas</td>
+      <td>do not manage directly</td>
+      </tr>
+      <tr>
+      <td>Service</td>
+      <td>stable network abstraction</td>
+      <td>stable endpoint for Pods</td>
+      <td>exposing Pods internally</td>
+      <td>direct Pod IP usage</td>
+      <td>selector, ports, type</td>
+      <td>prefer internal ClusterIP default</td>
+      </tr>
+      <tr>
+      <td>Namespace</td>
+      <td>cluster partition</td>
+      <td>isolation and policies</td>
+      <td>multi-env or team boundaries</td>
+      <td>all in one namespace</td>
+      <td>metadata.name</td>
+      <td>keep conventions consistent</td>
+      </tr>
+      <tr>
+      <td>ConfigMap</td>
+      <td>non-secret config</td>
+      <td>externalizes config</td>
+      <td>env vars, mounted files</td>
+      <td>secret data</td>
+      <td>data</td>
+      <td>keep config separate from image</td>
+      </tr>
+      <tr>
+      <td>Secret</td>
+      <td>sensitive data</td>
+      <td>stores confidential values</td>
+      <td>passwords, tokens</td>
+      <td>plain text config</td>
+      <td>stringData/data</td>
+      <td>use KMS, rotation, external secret systems</td>
+      </tr>
+      <tr>
+      <td>ServiceAccount</td>
+      <td>identity for workloads</td>
+      <td>workload auth</td>
+      <td>pod-to-kube API auth</td>
+      <td>shared admin identity</td>
+      <td>automountServiceAccountToken</td>
+      <td>least privilege</td>
+      </tr>
+      <tr>
+      <td>Ingress</td>
+      <td>HTTP/HTTPS entry point</td>
+      <td>external routing rules</td>
+      <td>public web traffic</td>
+      <td>arbitrary protocols</td>
+      <td>rules, ingressClassName</td>
+      <td>use proper ingress controller</td>
+      </tr>
+      <tr>
+      <td>PersistentVolume</td>
+      <td>cluster storage resource</td>
+      <td>physical backing storage</td>
+      <td>long-lived data</td>
+      <td>ephemeral workloads</td>
+      <td>capacity, access modes</td>
+      <td>size and reclaim policies matter</td>
+      </tr>
+      <tr>
+      <td>PersistentVolumeClaim</td>
+      <td>user request for storage</td>
+      <td>binds Pod to storage</td>
+      <td>stateful apps</td>
+      <td>stateless apps</td>
+      <td>storageClassName, accessModes</td>
+      <td>match workload needs</td>
+      </tr>
+      <tr>
+      <td>Job</td>
+      <td>short-lived batch task</td>
+      <td>run pods to completion</td>
+      <td>one-off jobs</td>
+      <td>long-running services</td>
+      <td>parallelism, completions</td>
+      <td>set backoff limits</td>
+      </tr>
+      <tr>
+      <td>CronJob</td>
+      <td>scheduled job</td>
+      <td>time-based tasks</td>
+      <td>periodic jobs</td>
+      <td>continuous services</td>
+      <td>schedule, jobTemplate</td>
+      <td>include timezone and retries</td>
+      </tr>
+      </tbody></table></div>
+      <h3 id="notes">Notes<a class="heading-anchor" href="#notes" aria-label="Link to Notes">#</a></h3>
+      <ul>
+      <li>Use a Deployment for most stateless apps.</li>
+      <li>Use a StatefulSet for workloads that require stable identity and ordered behavior.</li>
+      <li>Use a Job/CronJob for batch tasks.</li>
+      <li>Prefer Ingress or Gateway for external HTTP/HTTPS traffic over raw NodePort or LoadBalancer when possible.</li>
+      </ul>
+      <hr>
+      <h1 id="kubectl-mastery">kubectl mastery<a class="heading-anchor" href="#kubectl-mastery" aria-label="Link to kubectl mastery">#</a></h1>
+      <p>Kubectl is the primary command-line tool for interacting with a cluster.</p>
+      <h2 id="essential-commands">Essential commands<a class="heading-anchor" href="#essential-commands" aria-label="Link to Essential commands">#</a></h2>
+      <h3 id="getting-resources">Getting resources<a class="heading-anchor" href="#getting-resources" aria-label="Link to Getting resources">#</a></h3>
+      <pre><code class="language-bash">kubectl get pods
+      kubectl get pods -A
+      kubectl get deploy
+      kubectl get svc
+      kubectl get ns
+      kubectl get all
+      kubectl get ingress
+      kubectl get pvc,pv
+      </code></pre>
+      <h3 id="describing-resources">Describing resources<a class="heading-anchor" href="#describing-resources" aria-label="Link to Describing resources">#</a></h3>
+      <pre><code class="language-bash">kubectl describe pod backend-abc123
+      kubectl describe deploy backend
+      kubectl describe svc backend
+      kubectl describe ingress frontend
+      kubectl describe node minikube
+      </code></pre>
+      <h3 id="logs">Logs<a class="heading-anchor" href="#logs" aria-label="Link to Logs">#</a></h3>
+      <pre><code class="language-bash">kubectl logs backend-abc123
+      kubectl logs -f backend-abc123
+      kubectl logs deployment/backend
+      kubectl logs -n prod deployment/backend --tail=200
+      kubectl logs pod/backend-abc123 -c app
+      </code></pre>
+      <h3 id="exec">Exec<a class="heading-anchor" href="#exec" aria-label="Link to Exec">#</a></h3>
+      <pre><code class="language-bash">kubectl exec -it backend-abc123 -- sh
+      kubectl exec -it deployment/backend -- /bin/sh
+      kubectl exec -it backend-abc123 -- printenv
+      </code></pre>
+      <h3 id="port-forwarding">Port forwarding<a class="heading-anchor" href="#port-forwarding" aria-label="Link to Port forwarding">#</a></h3>
+      <pre><code class="language-bash">kubectl port-forward svc/backend 8080:8080
+      kubectl port-forward pod/backend-abc123 8080:8080
+      </code></pre>
+      <h3 id="applying-manifests">Applying manifests<a class="heading-anchor" href="#applying-manifests" aria-label="Link to Applying manifests">#</a></h3>
+      <pre><code class="language-bash">kubectl apply -f backend.yaml
+      kubectl apply -f ./manifests/
+      </code></pre>
+      <h3 id="updating-resources">Updating resources<a class="heading-anchor" href="#updating-resources" aria-label="Link to Updating resources">#</a></h3>
+      <pre><code class="language-bash">kubectl set image deployment/backend backend=ghcr.io/example/backend:2.0.0
+      kubectl edit deployment/backend
+      kubectl patch deployment/backend -p &#39;{&quot;spec&quot;:{&quot;replicas&quot;:5}}&#39;
+      </code></pre>
+      <h3 id="deleting-resources">Deleting resources<a class="heading-anchor" href="#deleting-resources" aria-label="Link to Deleting resources">#</a></h3>
+      <pre><code class="language-bash">kubectl delete pod backend-abc123
+      kubectl delete -f backend.yaml
+      kubectl delete ns dev
+      </code></pre>
+      <h3 id="rollouts-and-scaling">Rollouts and scaling<a class="heading-anchor" href="#rollouts-and-scaling" aria-label="Link to Rollouts and scaling">#</a></h3>
+      <pre><code class="language-bash">kubectl rollout status deployment/backend
+      kubectl rollout history deployment/backend
+      kubectl rollout undo deployment/backend
+      kubectl scale deployment/backend --replicas=5
+      kubectl autoscale deployment/backend --min=2 --max=10 --cpu-percent=70
+      </code></pre>
+      <h3 id="debugging">Debugging<a class="heading-anchor" href="#debugging" aria-label="Link to Debugging">#</a></h3>
+      <pre><code class="language-bash">kubectl get events --sort-by=.metadata.creationTimestamp
+      kubectl get events -A --field-selector involvedObject.name=backend
+      kubectl get pod -o yaml backend-abc123
+      kubectl get pod backend-abc123 -o jsonpath=&#39;{.status.phase}&#39;
+      </code></pre>
+      <h3 id="contexts-and-namespaces">Contexts and namespaces<a class="heading-anchor" href="#contexts-and-namespaces" aria-label="Link to Contexts and namespaces">#</a></h3>
+      <pre><code class="language-bash">kubectl config get-contexts
+      kubectl config use-context kind-kind
+      kubectl config set-context --current --namespace=prod
+      kubectl get ns
+      kubectl get pods -n prod
+      </code></pre>
+      <h3 id="labels-and-selectors">Labels and selectors<a class="heading-anchor" href="#labels-and-selectors" aria-label="Link to Labels and selectors">#</a></h3>
+      <pre><code class="language-bash">kubectl get pods -l app=backend
+      kubectl label pod backend-abc123 tier=api
+      kubectl label pod backend-abc123 tier-
+      kubectl get pod -L app,tier,env
+      </code></pre>
+      <h3 id="jsonpath">JSONPath<a class="heading-anchor" href="#jsonpath" aria-label="Link to JSONPath">#</a></h3>
+      <pre><code class="language-bash">kubectl get pods -o jsonpath=&#39;{.items[*].metadata.name}&#39;
+      kubectl get pods -o jsonpath=&#39;{range .items[*]}{.metadata.name}{&quot;\n&quot;}{end}&#39;
+      </code></pre>
+      <h3 id="useful-command-combinations">Useful command combinations<a class="heading-anchor" href="#useful-command-combinations" aria-label="Link to Useful command combinations">#</a></h3>
+      <pre><code class="language-bash">kubectl get pods -A --watch
+      kubectl logs -l app=backend --all-containers=true --tail=100
+      kubectl get pods -A | grep CrashLoopBackOff
+      kubectl describe pod $(kubectl get pod -l app=backend -o name | head -n 1)
+      </code></pre>
+      <h2 id="kubectl-cheat-sheet">kubectl cheat sheet<a class="heading-anchor" href="#kubectl-cheat-sheet" aria-label="Link to kubectl cheat sheet">#</a></h2>
+      <pre><code class="language-bash"># cluster basics
+      kubectl get nodes
+      kubectl get pods -A
+      kubectl get svc -A
+      kubectl get deploy -A
+      
+      # inspect a resource
+      kubectl describe pod &lt;name&gt;
+      kubectl describe deploy &lt;name&gt;
+      
+      # logs and shell
+      kubectl logs &lt;pod&gt;
+      kubectl logs -f &lt;pod&gt;
+      kubectl exec -it &lt;pod&gt; -- sh
+      
+      # networking
+      kubectl port-forward svc/&lt;svc&gt; 8080:8080
+      kubectl get endpoints &lt;svc&gt;
+      
+      # apply and roll out
+      kubectl apply -f deployment.yaml
+      kubectl rollout status deployment/&lt;name&gt;
+      kubectl rollout undo deployment/&lt;name&gt;
+      
+      # scaling
+      kubectl scale deploy/&lt;name&gt; --replicas=3
+      
+      # debug
+      kubectl get events --sort-by=.metadata.creationTimestamp
+      kubectl get pod &lt;name&gt; -o yaml
+      kubectl top pod
+      kubectl top node
+      </code></pre>
+      <h3 id="kubectl-best-practices">kubectl best practices<a class="heading-anchor" href="#kubectl-best-practices" aria-label="Link to kubectl best practices">#</a></h3>
+      <ul>
+      <li>prefer explicit resource names</li>
+      <li>use <code>--namespace</code> or context switching</li>
+      <li>use <code>-o wide</code> and <code>-o yaml</code> when debugging</li>
+      <li>avoid overusing <code>kubectl exec</code> in production for routine troubleshooting; prefer logs, metrics, and events</li>
+      <li>learn resource selectors deeply; they are foundational to most K8s workflows</li>
+      </ul>
+      <hr>
+      <h1 id="yaml--manifest-best-practices">YAML &amp; manifest best practices<a class="heading-anchor" href="#yaml--manifest-best-practices" aria-label="Link to YAML &amp; manifest best practices">#</a></h1>
+      <h2 id="kubernetes-yaml-structure">Kubernetes YAML structure<a class="heading-anchor" href="#kubernetes-yaml-structure" aria-label="Link to Kubernetes YAML structure">#</a></h2>
+      <p>Most manifests follow:</p>
+      <pre><code class="language-yaml">apiVersion: v1
+      kind: Pod
+      metadata:
+        name: example
+        labels:
+          app: demo
+      spec:
+        containers:
+          - name: app
+            image: nginx:stable
+            ports:
+              - containerPort: 80
+      </code></pre>
+      <p>Key fields:</p>
+      <ul>
+      <li><code>apiVersion</code>: API group/version</li>
+      <li><code>kind</code>: resource type</li>
+      <li><code>metadata</code>: name, namespace, labels, annotations</li>
+      <li><code>spec</code>: desired state</li>
+      </ul>
+      <h3 id="labels">Labels<a class="heading-anchor" href="#labels" aria-label="Link to Labels">#</a></h3>
+      <p>Use labels consistently:</p>
+      <ul>
+      <li><code>app</code></li>
+      <li><code>component</code></li>
+      <li><code>env</code></li>
+      <li><code>tier</code></li>
+      <li><code>managed-by</code></li>
+      </ul>
+      <h3 id="selectors">Selectors<a class="heading-anchor" href="#selectors" aria-label="Link to Selectors">#</a></h3>
+      <p>Selectors are how Services and controllers find matching resources. Make them stable and intentional.</p>
+      <h3 id="good-manifest-design">Good manifest design<a class="heading-anchor" href="#good-manifest-design" aria-label="Link to Good manifest design">#</a></h3>
+      <ul>
+      <li>keep manifests version-controlled</li>
+      <li>prefer declarative config</li>
+      <li>avoid duplicate config values across files</li>
+      <li>keep environment-specific values separate from base manifests</li>
+      <li>avoid injecting secrets into image layers or plain text manifests</li>
+      </ul>
+      <h3 id="bad-example">Bad example<a class="heading-anchor" href="#bad-example" aria-label="Link to Bad example">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: app
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: app
+        template:
+          metadata:
+            labels:
+              app: app
+          spec:
+            containers:
+              - name: app
+                image: myapp:latest
+                env:
+                  - name: DB_PASSWORD
+                    value: password123
+      </code></pre>
+      <h3 id="improved-example">Improved example<a class="heading-anchor" href="#improved-example" aria-label="Link to Improved example">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: backend
+        namespace: prod
+        labels:
+          app: backend
+          env: prod
+          tier: api
+      spec:
+        replicas: 3
+        selector:
+          matchLabels:
+            app: backend
+        template:
+          metadata:
+            labels:
+              app: backend
+              env: prod
+              tier: api
+          spec:
+            containers:
+              - name: backend
+                image: ghcr.io/example/backend:1.2.3
+                env:
+                  - name: DB_PASSWORD
+                    valueFrom:
+                      secretKeyRef:
+                        name: backend-secrets
+                        key: db-password
+      </code></pre>
+      <h3 id="why-the-improved-version-is-better">Why the improved version is better<a class="heading-anchor" href="#why-the-improved-version-is-better" aria-label="Link to Why the improved version is better">#</a></h3>
+      <ul>
+      <li>explicit namespace</li>
+      <li>stable image tag instead of <code>latest</code></li>
+      <li>multiple replicas for availability</li>
+      <li>secrets are not hardcoded</li>
+      <li>labels are meaningful and consistent</li>
+      <li>config is easier to reason about and audit</li>
+      </ul>
+      <hr>
+      <h1 id="networking">Networking<a class="heading-anchor" href="#networking" aria-label="Link to Networking">#</a></h1>
+      <h2 id="pod-networking">Pod networking<a class="heading-anchor" href="#pod-networking" aria-label="Link to Pod networking">#</a></h2>
+      <p>Each Pod gets an IP. Containers in the same Pod share networking. Different Pods cannot communicate via localhost; they use network addresses.</p>
+      <h2 id="services">Services<a class="heading-anchor" href="#services" aria-label="Link to Services">#</a></h2>
+      <p>A Service provides a stable endpoint for Pods. The cluster updates Service endpoints as Pods change.</p>
+      <h3 id="service-types">Service types<a class="heading-anchor" href="#service-types" aria-label="Link to Service types">#</a></h3>
+      <ul>
+      <li>ClusterIP: internal service IP; default</li>
+      <li>NodePort: exposes port on each node, usually not recommended for public internet exposure</li>
+      <li>LoadBalancer: cloud or external load balancer integration</li>
+      <li>ExternalName: maps DNS name</li>
+      </ul>
+      <h3 id="ingress">Ingress<a class="heading-anchor" href="#ingress" aria-label="Link to Ingress">#</a></h3>
+      <p>Ingress is for HTTP/HTTPS routing and host/path rules. It sits in front of Services.</p>
+      <h3 id="ingress-controllers">Ingress controllers<a class="heading-anchor" href="#ingress-controllers" aria-label="Link to Ingress controllers">#</a></h3>
+      <p>Ingress is just a resource. An Ingress controller implements the actual routing logic. Examples include NGINX Ingress, Traefik, HAProxy, and cloud-integrated controllers.</p>
+      <h3 id="dns-and-service-discovery">DNS and service discovery<a class="heading-anchor" href="#dns-and-service-discovery" aria-label="Link to DNS and service discovery">#</a></h3>
+      <p>Kubernetes DNS resolves service names like:</p>
+      <pre><code class="language-bash">backend.default.svc.cluster.local
+      </code></pre>
+      <h3 id="network-policies">Network policies<a class="heading-anchor" href="#network-policies" aria-label="Link to Network policies">#</a></h3>
+      <p>Network policies restrict Pod-to-Pod traffic.</p>
+      <h3 id="practical-networking-labs">Practical networking labs<a class="heading-anchor" href="#practical-networking-labs" aria-label="Link to Practical networking labs">#</a></h3>
+      <h4 id="lab-1-service-selection">Lab 1: Service selection<a class="heading-anchor" href="#lab-1-service-selection" aria-label="Link to Lab 1: Service selection">#</a></h4>
+      <p>Create a Deployment with two Pods and a Service selecting only one label set. Observe which Pods receive traffic.</p>
+      <h4 id="lab-2-wrong-selector-debug">Lab 2: wrong selector debug<a class="heading-anchor" href="#lab-2-wrong-selector-debug" aria-label="Link to Lab 2: wrong selector debug">#</a></h4>
+      <p>Create a Service selector that does not match the Pods. Then check:</p>
+      <pre><code class="language-bash">kubectl get endpoints
+      kubectl describe svc backend
+      kubectl get pods -l app=backend
+      </code></pre>
+      <h4 id="lab-3-nodeport-vs-ingress">Lab 3: NodePort vs Ingress<a class="heading-anchor" href="#lab-3-nodeport-vs-ingress" aria-label="Link to Lab 3: NodePort vs Ingress">#</a></h4>
+      <p>Deploy a simple app using ClusterIP and then compare NodePort to Ingress flow. Decide which is appropriate for production.</p>
+      <h3 id="best-practices-12">Best practices<a class="heading-anchor" href="#best-practices-12" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>prefer Services over direct Pod IPs</li>
+      <li>avoid unnecessary NodePorts</li>
+      <li>use Ingress for HTTP traffic</li>
+      <li>use NetworkPolicies where isolation matters</li>
+      <li>understand internal vs external traffic boundaries</li>
+      <li>expose only what needs to be exposed</li>
+      </ul>
+      <hr>
+      <h1 id="configuration--secrets">Configuration &amp; Secrets<a class="heading-anchor" href="#configuration--secrets" aria-label="Link to Configuration &amp; Secrets">#</a></h1>
+      <h2 id="configmaps">ConfigMaps<a class="heading-anchor" href="#configmaps" aria-label="Link to ConfigMaps">#</a></h2>
+      <p>Use ConfigMaps for non-sensitive configuration.</p>
+      <h3 id="example">Example<a class="heading-anchor" href="#example" aria-label="Link to Example">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: backend-config
+      data:
+        APP_ENV: prod
+        LOG_LEVEL: INFO
+      </code></pre>
+      <pre><code class="language-yaml">env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: APP_ENV
+      </code></pre>
+      <h2 id="secrets">Secrets<a class="heading-anchor" href="#secrets" aria-label="Link to Secrets">#</a></h2>
+      <p>Use Secrets for secrets and sensitive runtime values.</p>
+      <h3 id="example-1">Example<a class="heading-anchor" href="#example-1" aria-label="Link to Example">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: v1
+      kind: Secret
+      metadata:
+        name: backend-secrets
+      type: Opaque
+      stringData:
+        db-password: &quot;supersecret&quot;
+      </code></pre>
+      <p>Note: Kubernetes Secret is not a full secret-management system. It stores data in etcd and should be complemented with robust external secret practices.</p>
+      <h2 id="environment-variables-vs-mounted-configuration">Environment variables vs mounted configuration<a class="heading-anchor" href="#environment-variables-vs-mounted-configuration" aria-label="Link to Environment variables vs mounted configuration">#</a></h2>
+      <ul>
+      <li>env vars are convenient for small configuration</li>
+      <li>mounted config files are better for larger configs and updates</li>
+      </ul>
+      <h2 id="external-secret-management-concepts">External secret management concepts<a class="heading-anchor" href="#external-secret-management-concepts" aria-label="Link to External secret management concepts">#</a></h2>
+      <p>Common patterns:</p>
+      <ul>
+      <li>External Secrets Operator</li>
+      <li>Sealed Secrets</li>
+      <li>Vault integration</li>
+      <li>cloud-native KMS-backed secret management</li>
+      </ul>
+      <h3 id="best-practices-13">Best practices<a class="heading-anchor" href="#best-practices-13" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>never hard-code secrets into images</li>
+      <li>never commit plaintext production secrets to Git</li>
+      <li>keep config separate from application images</li>
+      <li>prefer secret management tooling over ad hoc manual secret creation</li>
+      <li>understand Secret limitations and rotate credentials regularly</li>
+      </ul>
+      <h3 id="intentional-mistake-lab">Intentional mistake lab<a class="heading-anchor" href="#intentional-mistake-lab" aria-label="Link to Intentional mistake lab">#</a></h3>
+      <p>Create a Deployment with a bad env var example and then fix it.</p>
+      <p>Exercise:</p>
+      <ol>
+      <li>put <code>DB_PASSWORD</code> directly in YAML</li>
+      <li>validate with <code>kubectl get deployment</code> and <code>kubectl describe pod</code></li>
+      <li>move it to a Secret and fix the app</li>
+      </ol>
+      <hr>
+      <h1 id="resource-management">Resource Management<a class="heading-anchor" href="#resource-management" aria-label="Link to Resource Management">#</a></h1>
+      <h2 id="why-resource-management-matters">Why resource management matters<a class="heading-anchor" href="#why-resource-management-matters" aria-label="Link to Why resource management matters">#</a></h2>
+      <p>Without requests and limits, scheduling and performance become unpredictable. This is one of the most common production issues in Kubernetes.</p>
+      <h2 id="cpu-and-memory-concepts">CPU and memory concepts<a class="heading-anchor" href="#cpu-and-memory-concepts" aria-label="Link to CPU and memory concepts">#</a></h2>
+      <ul>
+      <li><code>requests</code>: scheduler uses these to place Pods</li>
+      <li><code>limits</code>: kubelet enforces a maximum</li>
+      <li>QoS: Guaranteed, Burstable, BestEffort</li>
+      </ul>
+      <h3 id="example-2">Example<a class="heading-anchor" href="#example-2" aria-label="Link to Example">#</a></h3>
+      <pre><code class="language-yaml">resources:
+        requests:
+          cpu: &quot;250m&quot;
+          memory: &quot;256Mi&quot;
+        limits:
+          cpu: &quot;500m&quot;
+          memory: &quot;512Mi&quot;
+      </code></pre>
+      <h3 id="oom-and-scheduling-issues">OOM and scheduling issues<a class="heading-anchor" href="#oom-and-scheduling-issues" aria-label="Link to OOM and scheduling issues">#</a></h3>
+      <h4 id="exercise-1-container-consumes-too-much-memory">Exercise 1: container consumes too much memory<a class="heading-anchor" href="#exercise-1-container-consumes-too-much-memory" aria-label="Link to Exercise 1: container consumes too much memory">#</a></h4>
+      <p>Set a memory limit lower than the app needs and observe the Pod restart behavior.</p>
+      <h4 id="exercise-2-pod-gets-oomkilled">Exercise 2: Pod gets OOMKilled<a class="heading-anchor" href="#exercise-2-pod-gets-oomkilled" aria-label="Link to Exercise 2: Pod gets OOMKilled">#</a></h4>
+      <p>Run a Java app or memory-intensive workload with a too-low limit.</p>
+      <h4 id="exercise-3-cpu-limits-throttle-performance">Exercise 3: CPU limits throttle performance<a class="heading-anchor" href="#exercise-3-cpu-limits-throttle-performance" aria-label="Link to Exercise 3: CPU limits throttle performance">#</a></h4>
+      <p>Run a workload with a strict CPU limit and observe slower response times.</p>
+      <h4 id="exercise-4-scheduling-problems">Exercise 4: scheduling problems<a class="heading-anchor" href="#exercise-4-scheduling-problems" aria-label="Link to Exercise 4: scheduling problems">#</a></h4>
+      <p>Set requests too high for the node capacity and see <code>Pending</code> with <code>FailedScheduling</code>.</p>
+      <h3 id="best-practices-14">Best practices<a class="heading-anchor" href="#best-practices-14" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>start with real metrics, not guesses</li>
+      <li>requests should reflect sustainable baseline usage</li>
+      <li>limits should protect the node from noisy neighbors</li>
+      <li>test memory under load before production</li>
+      <li>tune application behavior with observability, not blind assumptions</li>
+      </ul>
+      <hr>
+      <h1 id="health-checks">Health checks<a class="heading-anchor" href="#health-checks" aria-label="Link to Health checks">#</a></h1>
+      <h2 id="probes">Probes<a class="heading-anchor" href="#probes" aria-label="Link to Probes">#</a></h2>
+      <p>Kubernetes supports:</p>
+      <ul>
+      <li>liveness probe</li>
+      <li>readiness probe</li>
+      <li>startup probe</li>
+      </ul>
+      <h3 id="spring-boot-example">Spring Boot example<a class="heading-anchor" href="#spring-boot-example" aria-label="Link to Spring Boot example">#</a></h3>
+      <p>A Spring Boot app often exposes <code>/actuator/health</code>.</p>
+      <h4 id="example-3">Example<a class="heading-anchor" href="#example-3" aria-label="Link to Example">#</a></h4>
+      <pre><code class="language-yaml">livenessProbe:
+        httpGet:
+          path: /actuator/health/liveness
+          port: 8080
+        initialDelaySeconds: 30
+        periodSeconds: 10
+      
+      readinessProbe:
+        httpGet:
+          path: /actuator/health/readiness
+          port: 8080
+        initialDelaySeconds: 20
+        periodSeconds: 10
+      
+      startupProbe:
+        httpGet:
+          path: /actuator/health
+          port: 8080
+        failureThreshold: 30
+        periodSeconds: 10
+      </code></pre>
+      <h3 id="what-each-probe-does">What each probe does<a class="heading-anchor" href="#what-each-probe-does" aria-label="Link to What each probe does">#</a></h3>
+      <ul>
+      <li>readiness: whether traffic should reach the Pod</li>
+      <li>liveness: whether the container should be restarted</li>
+      <li>startup: gives slow-starting apps time before liveness begins</li>
+      </ul>
+      <h3 id="common-mistakes-12">Common mistakes<a class="heading-anchor" href="#common-mistakes-12" aria-label="Link to Common mistakes">#</a></h3>
+      <ul>
+      <li>making liveness too aggressive</li>
+      <li>using readiness incorrectly so traffic never reaches the service</li>
+      <li>putting a probe on a path that never becomes healthy</li>
+      <li>not understanding that a failing liveness probe can restart the container automatically</li>
+      </ul>
+      <h3 id="failuredebugging-exercises">Failure/debugging exercises<a class="heading-anchor" href="#failuredebugging-exercises" aria-label="Link to Failure/debugging exercises">#</a></h3>
+      <ul>
+      <li>broken readiness path</li>
+      <li>container never becomes ready</li>
+      <li>liveness kills app due to too-short threshold</li>
+      <li>startup probe not configured for slow boot</li>
+      </ul>
+      <h3 id="best-practices-15">Best practices<a class="heading-anchor" href="#best-practices-15" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>readiness should be based on application health</li>
+      <li>liveness should not be too strict for short startup spikes</li>
+      <li>test probe behavior under real load and startup delay</li>
+      <li>use <code>/actuator/health</code> carefully and keep endpoints deterministic</li>
+      </ul>
+      <hr>
+      <h1 id="scaling--reliability">Scaling &amp; reliability<a class="heading-anchor" href="#scaling--reliability" aria-label="Link to Scaling &amp; reliability">#</a></h1>
+      <h2 id="replicas">Replicas<a class="heading-anchor" href="#replicas" aria-label="Link to Replicas">#</a></h2>
+      <p>Pods should be replicated when availability and throughput matter.</p>
+      <h3 id="rolling-updates-and-rollbacks">Rolling updates and rollbacks<a class="heading-anchor" href="#rolling-updates-and-rollbacks" aria-label="Link to Rolling updates and rollbacks">#</a></h3>
+      <p>A Deployment can update Pods gradually without downtime.</p>
+      <pre><code class="language-bash">kubectl rollout status deployment/backend
+      kubectl rollout undo deployment/backend
+      </code></pre>
+      <h3 id="deployment-strategies">Deployment strategies<a class="heading-anchor" href="#deployment-strategies" aria-label="Link to Deployment strategies">#</a></h3>
+      <ul>
+      <li>RollingUpdate (default)</li>
+      <li>Recreate (full replacement; can cause downtime)</li>
+      </ul>
+      <h3 id="horizontal-pod-autoscaler">Horizontal Pod Autoscaler<a class="heading-anchor" href="#horizontal-pod-autoscaler" aria-label="Link to Horizontal Pod Autoscaler">#</a></h3>
+      <pre><code class="language-bash">kubectl autoscale deployment backend --cpu-percent=70 --min=2 --max=10
+      </code></pre>
+      <h3 id="pod-disruptions">Pod disruptions<a class="heading-anchor" href="#pod-disruptions" aria-label="Link to Pod disruptions">#</a></h3>
+      <p>Use disruption budgets where availability matters.</p>
+      <h3 id="best-practices-16">Best practices<a class="heading-anchor" href="#best-practices-16" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>avoid single-replica production workloads when availability matters</li>
+      <li>use readiness probes</li>
+      <li>configure graceful shutdown</li>
+      <li>prefer rolling updates with health checks</li>
+      <li>understand bottlenecks before scaling blindly</li>
+      </ul>
+      <hr>
+      <h1 id="security-best-practices">Security best practices<a class="heading-anchor" href="#security-best-practices" aria-label="Link to Security best practices">#</a></h1>
+      <h2 id="rbac-roles-rolebindings-clusterroles">RBAC, Roles, RoleBindings, ClusterRoles<a class="heading-anchor" href="#rbac-roles-rolebindings-clusterroles" aria-label="Link to RBAC, Roles, RoleBindings, ClusterRoles">#</a></h2>
+      <p>These control authorization and least privilege.</p>
+      <h3 id="beginner-approach">Beginner approach<a class="heading-anchor" href="#beginner-approach" aria-label="Link to Beginner approach">#</a></h3>
+      <ul>
+      <li>cluster-admin everywhere</li>
+      <li>one service account used by all workloads</li>
+      <li>broad role permissions</li>
+      </ul>
+      <h3 id="why-this-is-risky">Why this is risky<a class="heading-anchor" href="#why-this-is-risky" aria-label="Link to Why this is risky">#</a></h3>
+      <ul>
+      <li>any compromised workload has unlimited cluster access</li>
+      <li>lateral movement becomes much easier</li>
+      </ul>
+      <h3 id="better-approach">Better approach<a class="heading-anchor" href="#better-approach" aria-label="Link to Better approach">#</a></h3>
+      <ul>
+      <li>create narrowly scoped Roles</li>
+      <li>separate workload identities by namespace and function</li>
+      <li>scope access to only needed resources</li>
+      </ul>
+      <h2 id="serviceaccounts">ServiceAccounts<a class="heading-anchor" href="#serviceaccounts" aria-label="Link to ServiceAccounts">#</a></h2>
+      <p>Use distinct ServiceAccounts per workload or team.</p>
+      <h2 id="security-contexts">Security contexts<a class="heading-anchor" href="#security-contexts" aria-label="Link to Security contexts">#</a></h2>
+      <p>Run containers with non-root users and least-privilege settings where possible.</p>
+      <pre><code class="language-yaml">securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: [&quot;ALL&quot;]
+      </code></pre>
+      <h2 id="networkpolicies">NetworkPolicies<a class="heading-anchor" href="#networkpolicies" aria-label="Link to NetworkPolicies">#</a></h2>
+      <p>Restrict traffic between Pods.</p>
+      <h2 id="container-security">Container security<a class="heading-anchor" href="#container-security" aria-label="Link to Container security">#</a></h2>
+      <ul>
+      <li>scan images</li>
+      <li>use trusted registries</li>
+      <li>pin image tags to specific versions</li>
+      <li>keep images minimal and patched</li>
+      </ul>
+      <h3 id="practical-security-labs">Practical security labs<a class="heading-anchor" href="#practical-security-labs" aria-label="Link to Practical security labs">#</a></h3>
+      <ul>
+      <li>deny all ingress except API server traffic</li>
+      <li>run a workload as root and fix it</li>
+      <li>test service account overreach</li>
+      <li>set a NetworkPolicy and verify traffic drops</li>
+      </ul>
+      <hr>
+      <h1 id="kubernetes-production-best-practices">Kubernetes production best practices<a class="heading-anchor" href="#kubernetes-production-best-practices" aria-label="Link to Kubernetes production best practices">#</a></h1>
+      <h2 id="workloads">Workloads<a class="heading-anchor" href="#workloads" aria-label="Link to Workloads">#</a></h2>
+      <ul>
+      <li>use Deployments instead of manually managed Pods</li>
+      <li>configure a meaningful replica count</li>
+      <li>define resource requests and limits</li>
+      <li>add readiness/liveness probes</li>
+      <li>ensure graceful shutdown and termination handling</li>
+      <li>use rolling updates carefully and test them</li>
+      </ul>
+      <h3 id="why-it-matters">Why it matters<a class="heading-anchor" href="#why-it-matters" aria-label="Link to Why it matters">#</a></h3>
+      <p>It reduces outage risk, improves predictability, and makes upgrades safe.</p>
+      <h2 id="configuration">Configuration<a class="heading-anchor" href="#configuration" aria-label="Link to Configuration">#</a></h2>
+      <ul>
+      <li>use ConfigMaps for non-secret config</li>
+      <li>use Secrets for sensitive data</li>
+      <li>isolate environment-specific config</li>
+      <li>use external secret management in real production</li>
+      </ul>
+      <h3 id="why-it-matters-1">Why it matters<a class="heading-anchor" href="#why-it-matters-1" aria-label="Link to Why it matters">#</a></h3>
+      <p>Good config management prevents accidental drift and makes deployments safer.</p>
+      <h2 id="security">Security<a class="heading-anchor" href="#security" aria-label="Link to Security">#</a></h2>
+      <ul>
+      <li>least privilege RBAC</li>
+      <li>non-root containers</li>
+      <li>read-only filesystem where appropriate</li>
+      <li>NetworkPolicies</li>
+      <li>image scanning and provenance</li>
+      </ul>
+      <h3 id="why-it-matters-2">Why it matters<a class="heading-anchor" href="#why-it-matters-2" aria-label="Link to Why it matters">#</a></h3>
+      <p>Security is not just a tool; it is a control over blast radius, privilege, and trust.</p>
+      <h2 id="networking-1">Networking<a class="heading-anchor" href="#networking-1" aria-label="Link to Networking">#</a></h2>
+      <ul>
+      <li>prefer Services for internal routing</li>
+      <li>use Ingress or Gateway for HTTP/HTTPS external traffic</li>
+      <li>manage TLS at the edge</li>
+      <li>restrict exposure and avoid unnecessary NodePorts</li>
+      </ul>
+      <h3 id="why-it-matters-3">Why it matters<a class="heading-anchor" href="#why-it-matters-3" aria-label="Link to Why it matters">#</a></h3>
+      <p>Network exposure drives the largest operational risk in app deployments.</p>
+      <h2 id="observability">Observability<a class="heading-anchor" href="#observability" aria-label="Link to Observability">#</a></h2>
+      <ul>
+      <li>logs</li>
+      <li>metrics</li>
+      <li>events</li>
+      <li>alerts</li>
+      <li>dashboarding</li>
+      </ul>
+      <h3 id="why-it-matters-4">Why it matters<a class="heading-anchor" href="#why-it-matters-4" aria-label="Link to Why it matters">#</a></h3>
+      <p>A healthy cluster is not just running; it is observable.</p>
+      <h2 id="reliability">Reliability<a class="heading-anchor" href="#reliability" aria-label="Link to Reliability">#</a></h2>
+      <ul>
+      <li>multiple replicas</li>
+      <li>availability-aware scheduling</li>
+      <li>disruption planning</li>
+      <li>autoscaling based on real load drivers</li>
+      <li>backup/recovery and failure testing</li>
+      </ul>
+      <h3 id="why-it-matters-5">Why it matters<a class="heading-anchor" href="#why-it-matters-5" aria-label="Link to Why it matters">#</a></h3>
+      <p>Production is the steady-state of recovering from failure, not the absence of failure.</p>
+      <h2 id="maintainability">Maintainability<a class="heading-anchor" href="#maintainability" aria-label="Link to Maintainability">#</a></h2>
+      <ul>
+      <li>naming conventions</li>
+      <li>labels and annotations</li>
+      <li>namespaces</li>
+      <li>GitOps or consistent declarative configuration</li>
+      <li>Helm when appropriate</li>
+      </ul>
+      <h3 id="why-it-matters-6">Why it matters<a class="heading-anchor" href="#why-it-matters-6" aria-label="Link to Why it matters">#</a></h3>
+      <p>The cluster should be understandable without tribal knowledge.</p>
+      <hr>
+      <h1 id="build-one-real-project">Build one real project<a class="heading-anchor" href="#build-one-real-project" aria-label="Link to Build one real project">#</a></h1>
+      <p>We will build a single realistic application progressively.</p>
+      <h2 id="architecture">Architecture<a class="heading-anchor" href="#architecture" aria-label="Link to Architecture">#</a></h2>
+      <pre><code class="language-text">                    Internet
+                             │
+                          Ingress
+                             │
+                      ┌──────┴──────┐
+                      │             │
+                   Frontend      Backend
+                   Next.js      Spring Boot
+                                    │
+                          ┌─────────┴─────────┐
+                          │                   │
+                      PostgreSQL            Redis
+      </code></pre>
+      <h2 id="progressive-build-plan">Progressive build plan<a class="heading-anchor" href="#progressive-build-plan" aria-label="Link to Progressive build plan">#</a></h2>
+      <h3 id="1-cluster">1. Cluster<a class="heading-anchor" href="#1-cluster" aria-label="Link to 1. Cluster">#</a></h3>
+      <ul>
+      <li>local cluster with kind or Minikube</li>
+      <li>verify nodes and namespaces</li>
+      </ul>
+      <h3 id="2-frontend">2. Frontend<a class="heading-anchor" href="#2-frontend" aria-label="Link to 2. Frontend">#</a></h3>
+      <ul>
+      <li>deploy Next.js frontend behind a Service</li>
+      <li>expose via Ingress</li>
+      </ul>
+      <h3 id="3-backend">3. Backend<a class="heading-anchor" href="#3-backend" aria-label="Link to 3. Backend">#</a></h3>
+      <ul>
+      <li>deploy Spring Boot API</li>
+      <li>add resource requests/limits</li>
+      <li>add probes</li>
+      </ul>
+      <h3 id="4-postgresql">4. PostgreSQL<a class="heading-anchor" href="#4-postgresql" aria-label="Link to 4. PostgreSQL">#</a></h3>
+      <ul>
+      <li>deploy StatefulSet or a managed database approach</li>
+      <li>use PVC</li>
+      <li>add secret-backed credentials</li>
+      </ul>
+      <h3 id="5-redis">5. Redis<a class="heading-anchor" href="#5-redis" aria-label="Link to 5. Redis">#</a></h3>
+      <ul>
+      <li>deploy a simple Redis Deployment</li>
+      <li>expose via a Service</li>
+      </ul>
+      <h3 id="6-services">6. Services<a class="heading-anchor" href="#6-services" aria-label="Link to 6. Services">#</a></h3>
+      <ul>
+      <li>internal backend Service</li>
+      <li>frontend Service</li>
+      <li>Redis Service</li>
+      <li>Postgres internal networking</li>
+      </ul>
+      <h3 id="7-configmaps">7. ConfigMaps<a class="heading-anchor" href="#7-configmaps" aria-label="Link to 7. ConfigMaps">#</a></h3>
+      <ul>
+      <li>app config</li>
+      <li>log level</li>
+      <li>feature toggles</li>
+      </ul>
+      <h3 id="8-secrets">8. Secrets<a class="heading-anchor" href="#8-secrets" aria-label="Link to 8. Secrets">#</a></h3>
+      <ul>
+      <li>DB password</li>
+      <li>JWT secret</li>
+      <li>Redis password if needed</li>
+      </ul>
+      <h3 id="9-persistent-storage">9. Persistent storage<a class="heading-anchor" href="#9-persistent-storage" aria-label="Link to 9. Persistent storage">#</a></h3>
+      <ul>
+      <li>use PVCs for DB</li>
+      <li>set storage class and access mode</li>
+      </ul>
+      <h3 id="10-ingress">10. Ingress<a class="heading-anchor" href="#10-ingress" aria-label="Link to 10. Ingress">#</a></h3>
+      <ul>
+      <li>route <code>/</code> to frontend</li>
+      <li>route <code>/api/*</code> to backend</li>
+      </ul>
+      <h3 id="11-tls">11. TLS<a class="heading-anchor" href="#11-tls" aria-label="Link to 11. TLS">#</a></h3>
+      <ul>
+      <li>use cert-manager or a self-signed local secret for learning</li>
+      </ul>
+      <h3 id="12-health-probes">12. Health probes<a class="heading-anchor" href="#12-health-probes" aria-label="Link to 12. Health probes">#</a></h3>
+      <ul>
+      <li>readiness and liveness for frontend and backend</li>
+      </ul>
+      <h3 id="13-resource-limits">13. Resource limits<a class="heading-anchor" href="#13-resource-limits" aria-label="Link to 13. Resource limits">#</a></h3>
+      <ul>
+      <li>set CPU and memory requests/limits</li>
+      </ul>
+      <h3 id="14-multiple-replicas">14. Multiple replicas<a class="heading-anchor" href="#14-multiple-replicas" aria-label="Link to 14. Multiple replicas">#</a></h3>
+      <ul>
+      <li>scale backend and frontend to 2 or 3 replicas</li>
+      </ul>
+      <h3 id="15-autoscaling">15. Autoscaling<a class="heading-anchor" href="#15-autoscaling" aria-label="Link to 15. Autoscaling">#</a></h3>
+      <ul>
+      <li>HPA on backend based on CPU or custom metrics</li>
+      </ul>
+      <h3 id="16-rbac">16. RBAC<a class="heading-anchor" href="#16-rbac" aria-label="Link to 16. RBAC">#</a></h3>
+      <ul>
+      <li>separate ServiceAccounts</li>
+      </ul>
+      <h3 id="17-networkpolicies">17. NetworkPolicies<a class="heading-anchor" href="#17-networkpolicies" aria-label="Link to 17. NetworkPolicies">#</a></h3>
+      <ul>
+      <li>isolate DB from internet-facing pods</li>
+      <li>only allow frontend/backend access paths</li>
+      </ul>
+      <h3 id="18-monitoring">18. Monitoring<a class="heading-anchor" href="#18-monitoring" aria-label="Link to 18. Monitoring">#</a></h3>
+      <ul>
+      <li>metrics and logs</li>
+      <li>Prometheus/Grafana or basic cluster metrics</li>
+      </ul>
+      <h3 id="19-logging">19. Logging<a class="heading-anchor" href="#19-logging" aria-label="Link to 19. Logging">#</a></h3>
+      <ul>
+      <li>centralize app logs</li>
+      <li>inspect events and crashes</li>
+      </ul>
+      <h3 id="20-helm">20. Helm<a class="heading-anchor" href="#20-helm" aria-label="Link to 20. Helm">#</a></h3>
+      <ul>
+      <li>move manifests into chart templates</li>
+      </ul>
+      <h3 id="21-cicd">21. CI/CD<a class="heading-anchor" href="#21-cicd" aria-label="Link to 21. CI/CD">#</a></h3>
+      <ul>
+      <li>Git push → test → build → push image → deploy</li>
+      </ul>
+      <h3 id="22-production-style-deployment">22. Production-style deployment<a class="heading-anchor" href="#22-production-style-deployment" aria-label="Link to 22. Production-style deployment">#</a></h3>
+      <ul>
+      <li>secure, observable, repeatable, tested rollout</li>
+      </ul>
+      <hr>
+      <h1 id="break-things-intentionally">Break things intentionally<a class="heading-anchor" href="#break-things-intentionally" aria-label="Link to Break things intentionally">#</a></h1>
+      <p>This is the fastest way to learn Kubernetes.</p>
+      <h2 id="failure-lab-framework">Failure lab framework<a class="heading-anchor" href="#failure-lab-framework" aria-label="Link to Failure lab framework">#</a></h2>
+      <p>For each issue, use this pattern:</p>
+      <p>Broken Setup ↓ Symptoms ↓ How to Investigate ↓ Useful kubectl Commands ↓ Root Cause ↓ Fix ↓ How to Prevent It</p>
+      <h2 id="common-failure-labs">Common failure labs<a class="heading-anchor" href="#common-failure-labs" aria-label="Link to Common failure labs">#</a></h2>
+      <h3 id="1-pod-stuck-in-pending">1. Pod stuck in Pending<a class="heading-anchor" href="#1-pod-stuck-in-pending" aria-label="Link to 1. Pod stuck in Pending">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>Pod never gets scheduled</li>
+      </ul>
+      <p>How to investigate:</p>
+      <pre><code class="language-bash">kubectl get pod &lt;name&gt;
+      kubectl describe pod &lt;name&gt;
+      kubectl get events -A --sort-by=.metadata.creationTimestamp
+      </code></pre>
+      <p>Root cause:</p>
+      <ul>
+      <li>insufficient resources, taints, selector mismatch, image pull issues, node unschedulable</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>correct requests, taints/tolerations, node capacity, image name</li>
+      </ul>
+      <p>Prevent:</p>
+      <ul>
+      <li>resource planning and label/selector hygiene</li>
+      </ul>
+      <h3 id="2-crashloopbackoff">2. CrashLoopBackOff<a class="heading-anchor" href="#2-crashloopbackoff" aria-label="Link to 2. CrashLoopBackOff">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>container restarts repeatedly</li>
+      </ul>
+      <p>Commands:</p>
+      <pre><code class="language-bash">kubectl get pods
+      kubectl logs &lt;pod&gt;
+      kubectl describe pod &lt;pod&gt;
+      </code></pre>
+      <p>Root cause:</p>
+      <ul>
+      <li>app crashes, bad startup command, config problem, failing health checks</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>inspect logs and restart logic</li>
+      </ul>
+      <p>Prevent:</p>
+      <ul>
+      <li>readiness/liveness testing, startup probes, good config</li>
+      </ul>
+      <h3 id="3-imagepullbackoff">3. ImagePullBackOff<a class="heading-anchor" href="#3-imagepullbackoff" aria-label="Link to 3. ImagePullBackOff">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>image cannot be pulled</li>
+      </ul>
+      <p>Commands:</p>
+      <pre><code class="language-bash">kubectl describe pod &lt;pod&gt;
+      kubectl get events -A
+      </code></pre>
+      <p>Root cause:</p>
+      <ul>
+      <li>bad image tag, private registry access problem, missing auth</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>correct image path and registry credentials</li>
+      </ul>
+      <p>Prevent:</p>
+      <ul>
+      <li>automated image validation and CI verification</li>
+      </ul>
+      <h3 id="4-oomkilled">4. OOMKilled<a class="heading-anchor" href="#4-oomkilled" aria-label="Link to 4. OOMKilled">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>restarted container after memory limit exceeded</li>
+      </ul>
+      <p>Commands:</p>
+      <pre><code class="language-bash">kubectl get pod &lt;pod&gt; -o yaml
+      kubectl describe pod &lt;pod&gt;
+      </code></pre>
+      <p>Root cause:</p>
+      <ul>
+      <li>container memory usage beyond the limit</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>raise memory limit and reduce footprint</li>
+      </ul>
+      <p>Prevent:</p>
+      <ul>
+      <li>realistic requests/limits and load testing</li>
+      </ul>
+      <h3 id="5-service-cannot-reach-pod">5. Service cannot reach Pod<a class="heading-anchor" href="#5-service-cannot-reach-pod" aria-label="Link to 5. Service cannot reach Pod">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>Service has endpoints but cannot connect</li>
+      </ul>
+      <p>Commands:</p>
+      <pre><code class="language-bash">kubectl get svc
+      kubectl get endpoints
+      kubectl describe svc &lt;svc&gt;
+      kubectl logs deployment/&lt;controller&gt;
+      </code></pre>
+      <p>Root cause:</p>
+      <ul>
+      <li>selector mismatch, port mismatch, readiness failure</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>align selector labels and port numbers</li>
+      </ul>
+      <p>Prevent:</p>
+      <ul>
+      <li>test the service path after every deployment</li>
+      </ul>
+      <h3 id="6-wrong-selector">6. Wrong selector<a class="heading-anchor" href="#6-wrong-selector" aria-label="Link to 6. Wrong selector">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>no endpoints or unexpected endpoints</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>ensure labels and selectors match exactly</li>
+      </ul>
+      <h3 id="7-incorrect-port">7. Incorrect port<a class="heading-anchor" href="#7-incorrect-port" aria-label="Link to 7. Incorrect port">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>targetPort mismatch, app listens on different port</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>match <code>containerPort</code> and <code>targetPort</code></li>
+      </ul>
+      <h3 id="8-broken-readiness-probe">8. Broken readiness probe<a class="heading-anchor" href="#8-broken-readiness-probe" aria-label="Link to 8. Broken readiness probe">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>Pod never gets ready, traffic not routed</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>check path, initial delay, and application health endpoint</li>
+      </ul>
+      <h3 id="9-broken-liveness-probe">9. Broken liveness probe<a class="heading-anchor" href="#9-broken-liveness-probe" aria-label="Link to 9. Broken liveness probe">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>app is restarted even while healthy</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>tune probe timing and expose a stable health endpoint</li>
+      </ul>
+      <h3 id="10-dns-failure">10. DNS failure<a class="heading-anchor" href="#10-dns-failure" aria-label="Link to 10. DNS failure">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>app cannot resolve internal service names</li>
+      </ul>
+      <p>Commands:</p>
+      <pre><code class="language-bash">kubectl exec -it &lt;pod&gt; -- nslookup backend
+      kubectl get svc
+      kubectl get endpoints
+      </code></pre>
+      <p>Root cause:</p>
+      <ul>
+      <li>CoreDNS or service configuration issue</li>
+      </ul>
+      <h3 id="11-configuration-missing">11. Configuration missing<a class="heading-anchor" href="#11-configuration-missing" aria-label="Link to 11. Configuration missing">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>app fails at startup because env var missing or config file absent</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>ConfigMap or Secret wiring</li>
+      </ul>
+      <h3 id="12-secret-missing">12. Secret missing<a class="heading-anchor" href="#12-secret-missing" aria-label="Link to 12. Secret missing">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>app fails to authenticate to DB or external systems</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>create or mount Secret correctly</li>
+      </ul>
+      <h3 id="13-persistentvolume-problem">13. PersistentVolume problem<a class="heading-anchor" href="#13-persistentvolume-problem" aria-label="Link to 13. PersistentVolume problem">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>Pod pending or volume attachment failure</li>
+      </ul>
+      <p>Commands:</p>
+      <pre><code class="language-bash">kubectl get pvc
+      kubectl get pv
+      kubectl describe pvc &lt;pvc&gt;
+      </code></pre>
+      <p>Fix:</p>
+      <ul>
+      <li>correct storage class, access mode, capacity</li>
+      </ul>
+      <h3 id="14-ingress-not-routing">14. Ingress not routing<a class="heading-anchor" href="#14-ingress-not-routing" aria-label="Link to 14. Ingress not routing">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>no route or 404/503</li>
+      </ul>
+      <p>Fix:</p>
+      <ul>
+      <li>check IngressClass, host, path, and controller config</li>
+      </ul>
+      <h3 id="15-deployment-rollout-failure">15. Deployment rollout failure<a class="heading-anchor" href="#15-deployment-rollout-failure" aria-label="Link to 15. Deployment rollout failure">#</a></h3>
+      <p>Symptoms:</p>
+      <ul>
+      <li>rollout stalls or hangs</li>
+      </ul>
+      <p>Commands:</p>
+      <pre><code class="language-bash">kubectl rollout status deployment/&lt;name&gt;
+      kubectl describe deployment &lt;name&gt;
+      </code></pre>
+      <p>Fix:</p>
+      <ul>
+      <li>inspect image issue, readiness failure, or resource constraints</li>
+      </ul>
+      <hr>
+      <h1 id="local-kubernetes-environment">Local Kubernetes environment<a class="heading-anchor" href="#local-kubernetes-environment" aria-label="Link to Local Kubernetes environment">#</a></h1>
+      <h2 id="free-and-local-options">Free and local options<a class="heading-anchor" href="#free-and-local-options" aria-label="Link to Free and local options">#</a></h2>
+      <h3 id="docker-desktop-kubernetes">Docker Desktop Kubernetes<a class="heading-anchor" href="#docker-desktop-kubernetes" aria-label="Link to Docker Desktop Kubernetes">#</a></h3>
+      <p>Best for:</p>
+      <ul>
+      <li>macOS/Windows users</li>
+      <li>local dev convenience</li>
+      <li>quick evaluation of a single-node cluster</li>
+      </ul>
+      <p>Pros:</p>
+      <ul>
+      <li>easiest setup</li>
+      <li>good for local dev workflows</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+      <li>not as lightweight or portable as some alternatives</li>
+      <li>less representative of multi-node clusters</li>
+      </ul>
+      <h3 id="minikube">Minikube<a class="heading-anchor" href="#minikube" aria-label="Link to Minikube">#</a></h3>
+      <p>Best for:</p>
+      <ul>
+      <li>learning Kubernetes on one machine</li>
+      <li>local cluster simulation with VM-based setup</li>
+      </ul>
+      <p>Pros:</p>
+      <ul>
+      <li>classic local learning option</li>
+      <li>fairly simple to use</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+      <li>virtual machine overhead</li>
+      <li>less ideal for rapid iteration with many clusters</li>
+      </ul>
+      <h3 id="kind-kubernetes-in-docker">kind (Kubernetes in Docker)<a class="heading-anchor" href="#kind-kubernetes-in-docker" aria-label="Link to kind (Kubernetes in Docker)">#</a></h3>
+      <p>Best for:</p>
+      <ul>
+      <li>learning, testing, and local cluster experiments</li>
+      <li>repeated cluster creation and teardown</li>
+      </ul>
+      <p>Pros:</p>
+      <ul>
+      <li>very fast</li>
+      <li>easy to create fresh clusters</li>
+      <li>strong for CI and local engineering work</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+      <li>cluster startup and management can require extra practice</li>
+      </ul>
+      <h3 id="recommendation">Recommendation<a class="heading-anchor" href="#recommendation" aria-label="Link to Recommendation">#</a></h3>
+      <p>For fast learning, use <code>kind</code> if you want repeatability and quick rebuilds; use Docker Desktop if you want the easiest developer experience. Both are suitable for this course. Minikube is still useful but not usually the first choice for a modern hands-on learning workflow.</p>
+      <h3 id="avoiding-paid-cloud-infrastructure-early">Avoiding paid cloud infrastructure early<a class="heading-anchor" href="#avoiding-paid-cloud-infrastructure-early" aria-label="Link to Avoiding paid cloud infrastructure early">#</a></h3>
+      <p>For fundamentals, local clusters are enough. You do not need an EKS/AKS/GKE setup to learn Kubernetes deeply.</p>
+      <h3 id="optional-advanced-path-later">Optional advanced path later<a class="heading-anchor" href="#optional-advanced-path-later" aria-label="Link to Optional advanced path later">#</a></h3>
+      <p>After mastering the basics:</p>
+      <ul>
+      <li>EKS, AKS, or GKE are excellent for production patterns and networking</li>
+      <li>learn cluster security, IAM, ingress controllers, cluster autoscaling, and observability there</li>
+      </ul>
+      <hr>
+      <h1 id="helm">Helm<a class="heading-anchor" href="#helm" aria-label="Link to Helm">#</a></h1>
+      <h2 id="why-helm-exists">Why Helm exists<a class="heading-anchor" href="#why-helm-exists" aria-label="Link to Why Helm exists">#</a></h2>
+      <p>Helm packages Kubernetes manifests into reusable charts.</p>
+      <h2 id="core-concepts">Core concepts<a class="heading-anchor" href="#core-concepts" aria-label="Link to Core concepts">#</a></h2>
+      <ul>
+      <li>chart: packaged application definition</li>
+      <li>templates: Go templates for Kubernetes YAML</li>
+      <li>values.yaml: configuration values</li>
+      <li>release: an installed chart instance</li>
+      </ul>
+      <h3 id="example-structure">Example structure<a class="heading-anchor" href="#example-structure" aria-label="Link to Example structure">#</a></h3>
+      <pre><code class="language-text">mychart/
+        Chart.yaml
+        values.yaml
+        templates/
+          deployment.yaml
+          service.yaml
+      </code></pre>
+      <h3 id="practical-helm-commands">Practical Helm commands<a class="heading-anchor" href="#practical-helm-commands" aria-label="Link to Practical Helm commands">#</a></h3>
+      <pre><code class="language-bash">helm create mychart
+      helm install myapp ./mychart
+      helm upgrade myapp ./mychart
+      helm uninstall myapp
+      helm list
+      helm template ./mychart
+      </code></pre>
+      <h3 id="environment-specific-values">Environment-specific values<a class="heading-anchor" href="#environment-specific-values" aria-label="Link to Environment-specific values">#</a></h3>
+      <pre><code class="language-yaml"># values-prod.yaml
+      replicaCount: 3
+      image:
+        tag: &quot;1.2.3&quot;
+      </code></pre>
+      <pre><code class="language-bash">helm install myapp ./mychart -f values-prod.yaml
+      </code></pre>
+      <h2 id="hands-on-package-the-backend-as-a-chart">Hands-on: package the backend as a chart<a class="heading-anchor" href="#hands-on-package-the-backend-as-a-chart" aria-label="Link to Hands-on: package the backend as a chart">#</a></h2>
+      <p>This small chart packages the Spring Boot backend from the project architecture. It keeps the image, replica count, Service port, and resource sizing configurable while keeping the Kubernetes templates readable.</p>
+      <p>Create this layout:</p>
+      <pre><code class="language-text">backend-chart/
+        Chart.yaml
+        values.yaml
+        values-dev.yaml
+        values-prod.yaml
+        templates/
+          deployment.yaml
+          service.yaml
+      </code></pre>
+      <h3 id="chartyaml"><code>Chart.yaml</code><a class="heading-anchor" href="#chartyaml" aria-label="Link to `Chart.yaml`">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: v2
+      name: backend
+      description: Spring Boot backend for the Kubernetes learning project
+      type: application
+      version: 0.1.0
+      appVersion: &quot;1.2.3&quot;
+      </code></pre>
+      <p><code>version</code> is the chart&#39;s package version. <code>appVersion</code> describes the application version; the image tag below remains explicitly configurable.</p>
+      <h3 id="valuesyaml"><code>values.yaml</code><a class="heading-anchor" href="#valuesyaml" aria-label="Link to `values.yaml`">#</a></h3>
+      <pre><code class="language-yaml">replicaCount: 2
+      
+      image:
+        repository: ghcr.io/example/backend
+        tag: &quot;1.2.3&quot;
+        pullPolicy: IfNotPresent
+      
+      service:
+        type: ClusterIP
+        port: 8080
+        targetPort: 8080
+      
+      resources:
+        requests:
+          cpu: 250m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      </code></pre>
+      <h3 id="templatesdeploymentyaml"><code>templates/deployment.yaml</code><a class="heading-anchor" href="#templatesdeploymentyaml" aria-label="Link to `templates/deployment.yaml`">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: { { .Release.Name } }
+        labels:
+          app.kubernetes.io/name: backend
+          app.kubernetes.io/instance: { { .Release.Name } }
+      spec:
+        replicas: { { .Values.replicaCount } }
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: backend
+            app.kubernetes.io/instance: { { .Release.Name } }
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: backend
+              app.kubernetes.io/instance: { { .Release.Name } }
+          spec:
+            containers:
+              - name: backend
+                image: &quot;{{ .Values.image.repository }}:{{ .Values.image.tag }}&quot;
+                imagePullPolicy: { { .Values.image.pullPolicy } }
+                ports:
+                  - name: http
+                    containerPort: { { .Values.service.targetPort } }
+                    protocol: TCP
+                startupProbe:
+                  httpGet:
+                    path: /actuator/health
+                    port: http
+                  periodSeconds: 10
+                  failureThreshold: 30
+                readinessProbe:
+                  httpGet:
+                    path: /actuator/health/readiness
+                    port: http
+                  periodSeconds: 10
+                livenessProbe:
+                  httpGet:
+                    path: /actuator/health/liveness
+                    port: http
+                  periodSeconds: 20
+                resources: { { - toYaml .Values.resources | nindent 12 } }
+      </code></pre>
+      <p>The probe paths assume Spring Boot Actuator&#39;s liveness and readiness health groups are enabled. Use paths your application actually exposes; a wrong probe path can prevent rollout or repeatedly restart a healthy process.</p>
+      <h3 id="templatesserviceyaml"><code>templates/service.yaml</code><a class="heading-anchor" href="#templatesserviceyaml" aria-label="Link to `templates/service.yaml`">#</a></h3>
+      <pre><code class="language-yaml">apiVersion: v1
+      kind: Service
+      metadata:
+        name: { { .Release.Name } }
+        labels:
+          app.kubernetes.io/name: backend
+          app.kubernetes.io/instance: { { .Release.Name } }
+      spec:
+        type: { { .Values.service.type } }
+        selector:
+          app.kubernetes.io/name: backend
+          app.kubernetes.io/instance: { { .Release.Name } }
+        ports:
+          - name: http
+            port: { { .Values.service.port } }
+            targetPort: http
+            protocol: TCP
+      </code></pre>
+      <p>The selector labels in the Service must match the Pod-template labels exactly. If they do not, the Service has no endpoints.</p>
+      <h3 id="environment-values">Environment values<a class="heading-anchor" href="#environment-values" aria-label="Link to Environment values">#</a></h3>
+      <p>Keep shared defaults in <code>values.yaml</code>, then override only what differs by environment.</p>
+      <p><code>values-dev.yaml</code>:</p>
+      <pre><code class="language-yaml">replicaCount: 1
+      image:
+        tag: &quot;1.2.3-dev&quot;
+      </code></pre>
+      <p><code>values-prod.yaml</code>:</p>
+      <pre><code class="language-yaml">replicaCount: 3
+      image:
+        tag: &quot;1.2.3&quot;
+      resources:
+        requests:
+          cpu: 500m
+          memory: 512Mi
+        limits:
+          cpu: &quot;1&quot;
+          memory: 1Gi
+      </code></pre>
+      <p>Do not put database passwords, tokens, or private keys in <code>values.yaml</code>, override files, or <code>--set</code> arguments. Use an external secret manager or a separately managed Kubernetes Secret, and have the application chart reference the existing Secret when you wire in application configuration.</p>
+      <h3 id="render-validate-and-deploy">Render, validate, and deploy<a class="heading-anchor" href="#render-validate-and-deploy" aria-label="Link to Render, validate, and deploy">#</a></h3>
+      <pre><code class="language-bash"># Check chart metadata and templates
+      helm lint ./backend-chart
+      
+      # Render locally without changing the cluster
+      helm template backend ./backend-chart -f ./backend-chart/values-dev.yaml
+      
+      # Preview the API changes before applying
+      helm upgrade --install backend ./backend-chart \
+        --namespace learning --create-namespace \
+        --values ./backend-chart/values-dev.yaml \
+        --dry-run --debug
+      
+      # Install or update the release
+      helm upgrade --install backend ./backend-chart \
+        --namespace learning --create-namespace \
+        --values ./backend-chart/values-dev.yaml \
+        --wait --timeout 3m
+      
+      # Check the release and Kubernetes resources
+      helm status backend --namespace learning
+      kubectl get deployment,service,pods -n learning
+      kubectl rollout status deployment/backend -n learning
+      </code></pre>
+      <p>For production values, use <code>-f ./backend-chart/values-prod.yaml</code> after checking that the cluster has enough capacity and the image is available in its registry.</p>
+      <h3 id="upgrade-and-rollback">Upgrade and rollback<a class="heading-anchor" href="#upgrade-and-rollback" aria-label="Link to Upgrade and rollback">#</a></h3>
+      <p>Change the image tag in the environment values file, then run:</p>
+      <pre><code class="language-bash">helm upgrade backend ./backend-chart \
+        --namespace learning \
+        --values ./backend-chart/values-dev.yaml \
+        --wait --timeout 3m
+      
+      helm history backend --namespace learning
+      helm rollback backend 1 --namespace learning --wait
+      </code></pre>
+      <p>Helm revisions track chart releases. A rollback restores a prior release configuration; it does not undo database migrations or other external side effects, so those need their own recovery plan.</p>
+      <h3 id="troubleshoot-a-chart-release">Troubleshoot a chart release<a class="heading-anchor" href="#troubleshoot-a-chart-release" aria-label="Link to Troubleshoot a chart release">#</a></h3>
+      <pre><code class="language-bash">helm status backend --namespace learning
+      helm get values backend --namespace learning
+      helm get manifest backend --namespace learning
+      kubectl describe deployment backend -n learning
+      kubectl get events -n learning --sort-by=.metadata.creationTimestamp
+      kubectl logs deployment/backend -n learning --tail=100
+      </code></pre>
+      <p>Compare rendered manifests (<code>helm template</code> or <code>helm get manifest</code>) with the live resource, then use Pod events and logs to identify whether the issue is in the chart, image, configuration, or application startup.</p>
+      <h3 id="hpa-and-chart-ownership">HPA and chart ownership<a class="heading-anchor" href="#hpa-and-chart-ownership" aria-label="Link to HPA and chart ownership">#</a></h3>
+      <p>When you add a HorizontalPodAutoscaler, make it configurable and do not let the chart continuously reset <code>spec.replicas</code> to a fixed value. In practice, omit the Deployment <code>replicas</code> field when autoscaling is enabled, and ensure the cluster has the metrics API required by the chosen HPA metrics.</p>
+      <h3 id="best-practices-17">Best practices<a class="heading-anchor" href="#best-practices-17" aria-label="Link to Best practices">#</a></h3>
+      <ul>
+      <li>use Helm only when it adds value</li>
+      <li>version charts and values</li>
+      <li>keep templates readable and deterministic</li>
+      <li>avoid overengineering small charts</li>
+      <li>use values for environment config and avoid duplication</li>
+      </ul>
+      <h3 id="when-not-to-use-helm">When not to use Helm<a class="heading-anchor" href="#when-not-to-use-helm" aria-label="Link to When not to use Helm">#</a></h3>
+      <ul>
+      <li>a small app with only a handful of manifests and no packaging need</li>
+      <li>a team is not ready for chart maintenance and release discipline</li>
+      <li>a platform already provides a better app delivery layer</li>
+      </ul>
+      <hr>
+      <h1 id="cicd">CI/CD<a class="heading-anchor" href="#cicd" aria-label="Link to CI/CD">#</a></h1>
+      <h2 id="delivery-flow">Delivery flow<a class="heading-anchor" href="#delivery-flow" aria-label="Link to Delivery flow">#</a></h2>
+      <pre><code class="language-text">Git Push
+         ↓
+      Build
+         ↓
+      Test
+         ↓
+      Docker Image
+         ↓
+      Image Registry
+         ↓
+      Kubernetes Deployment
+         ↓
+      Health Check
+         ↓
+      Rollout
+      </code></pre>
+      <h2 id="practical-example">Practical example<a class="heading-anchor" href="#practical-example" aria-label="Link to Practical example">#</a></h2>
+      <p>When a PR merges:</p>
+      <ol>
+      <li>run tests</li>
+      <li>build container image</li>
+      <li>push image with a version tag</li>
+      <li>deploy to cluster via manifest update or Helm release</li>
+      <li>verify health and rollout status</li>
+      <li>rollback if needed</li>
+      </ol>
+      <h2 id="image-tagging">Image tagging<a class="heading-anchor" href="#image-tagging" aria-label="Link to Image tagging">#</a></h2>
+      <ul>
+      <li>use versioned tags such as <code>1.2.3</code></li>
+      <li>use immutable tags for reproducibility</li>
+      <li>avoid <code>latest</code> for production deployment</li>
+      </ul>
+      <h2 id="versioning-and-rollout-safety">Versioning and rollout safety<a class="heading-anchor" href="#versioning-and-rollout-safety" aria-label="Link to Versioning and rollout safety">#</a></h2>
+      <ul>
+      <li>ensure deployment uses pinned image tags</li>
+      <li>verify app health before scaling or broad rollout</li>
+      <li>keep rollout history accessible</li>
+      </ul>
+      <h2 id="secrets-in-cicd">Secrets in CI/CD<a class="heading-anchor" href="#secrets-in-cicd" aria-label="Link to Secrets in CI/CD">#</a></h2>
+      <ul>
+      <li>use GitHub Actions, Azure DevOps, GitLab CI, or another pipeline system</li>
+      <li>store secrets in the pipeline secret store, not source-controlled files</li>
+      <li>avoid embedding registry and cluster credentials in code</li>
+      </ul>
+      <h2 id="best-practices-18">Best practices<a class="heading-anchor" href="#best-practices-18" aria-label="Link to Best practices">#</a></h2>
+      <ul>
+      <li>separate dev/stage/prod pipelines</li>
+      <li>protect production deployments with approvals and checks</li>
+      <li>use automated rollback on failed health checks</li>
+      <li>keep deployment manifests in Git and avoid ad hoc shell-based deploys</li>
+      </ul>
+      <hr>
+      <h1 id="observability-1">Observability<a class="heading-anchor" href="#observability-1" aria-label="Link to Observability">#</a></h1>
+      <h2 id="practical-investigation-flow">Practical investigation flow<a class="heading-anchor" href="#practical-investigation-flow" aria-label="Link to Practical investigation flow">#</a></h2>
+      <p>When the app is slow, investigate systematically:</p>
+      <ol>
+      <li>check pod health and restarts</li>
+      <li>inspect logs</li>
+      <li>review events and describe output</li>
+      <li>check resource usage</li>
+      <li>inspect Service endpoints and ingress routing</li>
+      <li>verify database, cache, and external dependencies</li>
+      </ol>
+      <h2 id="kubectl-logs">kubectl logs<a class="heading-anchor" href="#kubectl-logs" aria-label="Link to kubectl logs">#</a></h2>
+      <pre><code class="language-bash">kubectl logs deployment/backend --tail=200
+      kubectl logs -f deployment/backend
+      kubectl logs --previous &lt;pod&gt;
+      </code></pre>
+      <h2 id="events">Events<a class="heading-anchor" href="#events" aria-label="Link to Events">#</a></h2>
+      <pre><code class="language-bash">kubectl get events --sort-by=.metadata.creationTimestamp
+      kubectl describe pod &lt;name&gt;
+      </code></pre>
+      <h2 id="metrics">Metrics<a class="heading-anchor" href="#metrics" aria-label="Link to Metrics">#</a></h2>
+      <p>Kubernetes metrics and monitoring are critical for understanding resource contention and bottlenecks.</p>
+      <h3 id="recommended-patterns">Recommended patterns<a class="heading-anchor" href="#recommended-patterns" aria-label="Link to Recommended patterns">#</a></h3>
+      <ul>
+      <li>Prometheus for metrics</li>
+      <li>Grafana for dashboards</li>
+      <li>alerts for SLO/SLI breaches</li>
+      <li>application metrics for latency, errors, saturation</li>
+      </ul>
+      <h2 id="how-to-investigate-a-slow-app">How to investigate a slow app<a class="heading-anchor" href="#how-to-investigate-a-slow-app" aria-label="Link to How to investigate a slow app">#</a></h2>
+      <ul>
+      <li>check CPU or memory pressure</li>
+      <li>examine Pod QOS and limits</li>
+      <li>inspect application logs for bottlenecks</li>
+      <li>validate DB latency</li>
+      <li>inspect service routing and ingress metrics</li>
+      <li>ensure readiness and liveness are not causing churn</li>
+      </ul>
+      <hr>
+      <h1 id="best-practice-review-checklist">Best-practice review checklist<a class="heading-anchor" href="#best-practice-review-checklist" aria-label="Link to Best-practice review checklist">#</a></h1>
+      <p>Use this after your project is running.</p>
+      <h2 id="security-1">Security<a class="heading-anchor" href="#security-1" aria-label="Link to Security">#</a></h2>
+      <ul>
+      <li>❌ Everyone uses cluster-admin → ✅ Use least-privilege Roles and ServiceAccounts</li>
+      <li>❌ Secrets are in manifests → ✅ Use Secrets and external secret management</li>
+      <li>❌ Containers run as root → ✅ Use non-root security contexts where possible</li>
+      <li>❌ No NetworkPolicies → ✅ Restrict traffic by namespace and workload</li>
+      </ul>
+      <h2 id="networking-2">Networking<a class="heading-anchor" href="#networking-2" aria-label="Link to Networking">#</a></h2>
+      <ul>
+      <li>❌ Pod IPs are hardcoded → ✅ Use Services and Ingress</li>
+      <li>❌ NodePort is used for everything → ✅ Use internal Services and proper external entry points</li>
+      <li>❌ All traffic is public → ✅ Separate internal and external traffic paths</li>
+      </ul>
+      <h2 id="resources">Resources<a class="heading-anchor" href="#resources" aria-label="Link to Resources">#</a></h2>
+      <ul>
+      <li>❌ No requests or limits → ✅ Set realistic requests and limits</li>
+      <li>❌ Single replica everywhere → ✅ Multi-replica production workloads with healthy scaling</li>
+      <li>❌ Ignore node pressure → ✅ Watch resource usage and scheduling constraints</li>
+      </ul>
+      <h2 id="reliability-1">Reliability<a class="heading-anchor" href="#reliability-1" aria-label="Link to Reliability">#</a></h2>
+      <ul>
+      <li>❌ Deploy without probes → ✅ Add readiness/liveness/startup probes</li>
+      <li>❌ No rolling update strategy → ✅ Use safe deployment patterns and rollback plans</li>
+      <li>❌ No health validation → ✅ Verify rollout and health before promotion</li>
+      </ul>
+      <h2 id="observability-2">Observability<a class="heading-anchor" href="#observability-2" aria-label="Link to Observability">#</a></h2>
+      <ul>
+      <li>❌ Blind deploys → ✅ Check logs, metrics, events, and traces</li>
+      <li>❌ No alerts → ✅ Monitor key business and system signals</li>
+      <li>❌ No investigation process → ✅ Follow a systematic debugging workflow</li>
+      </ul>
+      <h2 id="configuration-1">Configuration<a class="heading-anchor" href="#configuration-1" aria-label="Link to Configuration">#</a></h2>
+      <ul>
+      <li>❌ Config baked into images → ✅ Use ConfigMaps and Secrets</li>
+      <li>❌ Different envs share same config → ✅ Keep env-specific config explicit and testable</li>
+      </ul>
+      <h2 id="storage">Storage<a class="heading-anchor" href="#storage" aria-label="Link to Storage">#</a></h2>
+      <ul>
+      <li>❌ No PVC planning → ✅ Match storage class, access mode, and workload needs</li>
+      <li>❌ Stateful workloads treated like stateless ones → ✅ Use right storage and workload type</li>
+      </ul>
+      <h2 id="deployment">Deployment<a class="heading-anchor" href="#deployment" aria-label="Link to Deployment">#</a></h2>
+      <ul>
+      <li>❌ <code>latest</code> everywhere → ✅ Versioned, immutable images</li>
+      <li>❌ manual changes in cluster → ✅ Git-managed declarative configuration</li>
+      <li>❌ no rollback plan → ✅ maintain deployment history and rollback path</li>
+      </ul>
+      <h2 id="cicd-1">CI/CD<a class="heading-anchor" href="#cicd-1" aria-label="Link to CI/CD">#</a></h2>
+      <ul>
+      <li>❌ Deploy directly from local machines → ✅ Automated pipeline with validations</li>
+      <li>❌ secrets in Git → ✅ use CI secret stores and role isolation</li>
+      </ul>
+      <h2 id="maintainability-1">Maintainability<a class="heading-anchor" href="#maintainability-1" aria-label="Link to Maintainability">#</a></h2>
+      <ul>
+      <li>❌ labels are random → ✅ standard naming and labels</li>
+      <li>❌ no namespace strategy → ✅ environment and team separation</li>
+      <li>❌ no GitOps or versioned manifests → ✅ declarative, reviewable infrastructure</li>
+      </ul>
+      <hr>
+      <h1 id="final-capstone-challenge">Final capstone challenge<a class="heading-anchor" href="#final-capstone-challenge" aria-label="Link to Final capstone challenge">#</a></h1>
+      <p>Do not immediately look at the reference solution below.</p>
+      <h2 id="capstone-requirements">Capstone requirements<a class="heading-anchor" href="#capstone-requirements" aria-label="Link to Capstone requirements">#</a></h2>
+      <p>Design and deploy a simple production-like Kubernetes application that includes:</p>
+      <ul>
+      <li>a Frontend (Next.js)</li>
+      <li>a Backend (Spring Boot REST API)</li>
+      <li>PostgreSQL database</li>
+      <li>Redis cache</li>
+      <li>ConfigMap for app config</li>
+      <li>Secret for DB credentials and app secrets</li>
+      <li>Service for backend and frontend</li>
+      <li>Ingress routing for frontend and backend paths</li>
+      <li>PVC and storage for PostgreSQL</li>
+      <li>health checks on frontend and backend</li>
+      <li>resource requests and limits</li>
+      <li>multiple replicas for the backend</li>
+      <li>autoscaling for at least the backend</li>
+      <li>RBAC and separate ServiceAccounts</li>
+      <li>NetworkPolicy restricting non-essential traffic</li>
+      <li>Helm chart packaging</li>
+      <li>CI/CD pipeline with image build and deploy</li>
+      <li>ability to intentionally break the app and debug it</li>
+      </ul>
+      <p>Your challenge:</p>
+      <ol>
+      <li>design the architecture</li>
+      <li>write the manifests or chart</li>
+      <li>deploy the application locally</li>
+      <li>configure networking and storage</li>
+      <li>add config and secrets</li>
+      <li>add health checks, scaling, and security</li>
+      <li>intentionally break one thing and debug it</li>
+      <li>deploy via CI/CD pipeline</li>
+      </ol>
+      <h2 id="reference-solution-only-after-you-attempt-the-challenge">Reference solution (only after you attempt the challenge)<a class="heading-anchor" href="#reference-solution-only-after-you-attempt-the-challenge" aria-label="Link to Reference solution (only after you attempt the challenge)">#</a></h2>
+      <h3 id="architecture-1">Architecture<a class="heading-anchor" href="#architecture-1" aria-label="Link to Architecture">#</a></h3>
+      <p>Use:</p>
+      <ul>
+      <li><code>Deployment</code> for frontend and backend</li>
+      <li><code>Service</code> for each app</li>
+      <li><code>Ingress</code> for external routing</li>
+      <li><code>StatefulSet</code> or a Kubernetes-managed Postgres deployment with PVC</li>
+      <li><code>Deployment</code> for Redis</li>
+      <li><code>ConfigMap</code> for environment config</li>
+      <li><code>Secret</code> for credentials</li>
+      <li><code>HPA</code> for backend</li>
+      <li><code>NetworkPolicy</code> to restrict traffic</li>
+      </ul>
+      <h3 id="example-high-level-flow">Example high-level flow<a class="heading-anchor" href="#example-high-level-flow" aria-label="Link to Example high-level flow">#</a></h3>
+      <pre><code class="language-yaml"># ingress routing
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: app-ingress
+      spec:
+        rules:
+          - host: app.local
+            http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: frontend
+                      port:
+                        number: 3000
+                - path: /api
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: backend
+                      port:
+                        number: 8080
+      </code></pre>
+      <h3 id="deployment-guidance">Deployment guidance<a class="heading-anchor" href="#deployment-guidance" aria-label="Link to Deployment guidance">#</a></h3>
+      <ul>
+      <li>run 2–3 replicas of backend behind a Service</li>
+      <li>use readiness probe before adding it to traffic</li>
+      <li>set <code>terminationGracePeriodSeconds</code> for graceful shutdown</li>
+      <li>keep labels consistent and explicit</li>
+      <li>use container images with versioned tags</li>
+      </ul>
+      <h3 id="production-grade-checklist">Production-grade checklist<a class="heading-anchor" href="#production-grade-checklist" aria-label="Link to Production-grade checklist">#</a></h3>
+      <ul>
+      <li>add <code>readinessProbe</code> and <code>livenessProbe</code></li>
+      <li>set <code>requests</code> and <code>limits</code></li>
+      <li>use <code>Secret</code> for sensitive values</li>
+      <li>use <code>NetworkPolicy</code> to restrict DB access</li>
+      <li>use <code>HPA</code> for backend autoscaling</li>
+      <li>ensure logs and events are easy to inspect</li>
+      <li>keep manifests in Git and apply via CI/CD pipeline</li>
+      </ul>
+      <hr>
+      <h1 id="30-day-learning-roadmap">30-day learning roadmap<a class="heading-anchor" href="#30-day-learning-roadmap" aria-label="Link to 30-day learning roadmap">#</a></h1>
+      <h2 id="day-1">Day 1<a class="heading-anchor" href="#day-1" aria-label="Link to Day 1">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>what Kubernetes is and what it solves</li>
+      <li>container vs cluster concepts</li>
+      <li>architecture overview</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>local cluster with kind or Docker Desktop</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li><code>kubectl get nodes</code>, <code>kubectl get pods -A</code></li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>explain the difference between a container, Pod, Deployment, and Service</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>use <code>kubectl</code> to inspect, not guess</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can explain the cluster model and start a local cluster</li>
+      </ul>
+      <h2 id="day-2">Day 2<a class="heading-anchor" href="#day-2" aria-label="Link to Day 2">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>Pods, Deployments, ReplicaSets, Services</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>deploy a simple NGINX app</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>labels, selectors, endpoints</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>create a Service that routes to multiple Pods</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>never use Pod IPs in production</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can deploy and route a simple stateless app</li>
+      </ul>
+      <h2 id="day-3">Day 3<a class="heading-anchor" href="#day-3" aria-label="Link to Day 3">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>Namespaces, labels, selectors, manifests</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>split workloads by namespace</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li><code>kubectl get -A</code>, <code>kubectl describe</code>, <code>kubectl logs</code></li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>create dev and prod namespaces and compare</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>keep environment boundaries clear</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you understand namespace and labeling discipline</li>
+      </ul>
+      <h2 id="day-4">Day 4<a class="heading-anchor" href="#day-4" aria-label="Link to Day 4">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>YAML structure and best practices</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>write a Deployment and Service YAML</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li><code>kubectl apply</code>, <code>kubectl edit</code>, <code>kubectl delete</code></li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>fix a broken manifest and redeploy</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>keep manifests in Git and review them like code</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can author and apply basic manifests</li>
+      </ul>
+      <h2 id="day-5">Day 5<a class="heading-anchor" href="#day-5" aria-label="Link to Day 5">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>ConfigMaps and Secrets</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>externalize config in a real app</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>env vars and mounted config files</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>accidentally hardcode a secret, then fix it</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>never commit production secrets to Git</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can manage config and secrets cleanly</li>
+      </ul>
+      <h2 id="day-6">Day 6<a class="heading-anchor" href="#day-6" aria-label="Link to Day 6">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>networking, Services, ClusterIP, NodePort, LoadBalancer, Ingress</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>expose a frontend app through a Service and Ingress</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>inspect endpoints and routing behavior</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>debug a misconfigured selector or port mismatch</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>prefer the smallest correct exposure pattern</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you understand K8s networking and service routing</li>
+      </ul>
+      <h2 id="day-7">Day 7<a class="heading-anchor" href="#day-7" aria-label="Link to Day 7">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>resource requests and limits, QoS</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>set CPU and memory requests on app manifests</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>observe scheduling and Pod status</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>intentionally create an OOMKilled Pod and fix it</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>size requests based on real usage, not guesses</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can reason about resource pressure and scheduling</li>
+      </ul>
+      <h2 id="day-8">Day 8<a class="heading-anchor" href="#day-8" aria-label="Link to Day 8">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>readiness, liveness, startup probes</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>deploy a Spring Boot app with health-check endpoints</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>trigger probe failures and observe container restarts</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>debug a misconfigured health probe that causes outages</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>probes should reflect real service health</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can configure and troubleshoot health checks</li>
+      </ul>
+      <h2 id="day-9">Day 9<a class="heading-anchor" href="#day-9" aria-label="Link to Day 9">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>rolling updates, rollbacks, Deployment strategy</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>update a deployment to a new image version</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li><code>kubectl rollout status</code> and <code>kubectl rollout undo</code></li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>force a failing rollout and roll back safely</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>always test a rollout path before production</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can handle safe downstream updates</li>
+      </ul>
+      <h2 id="day-10">Day 10<a class="heading-anchor" href="#day-10" aria-label="Link to Day 10">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>scaling and HPA</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>run a backend with 2–3 replicas and autoscale</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>stress the app and watch scale-up behavior</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>explain why scaling a database is different from scaling web pods</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>scale only after understanding the bottleneck</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can scale stateless workloads responsibly</li>
+      </ul>
+      <h2 id="day-11">Day 11<a class="heading-anchor" href="#day-11" aria-label="Link to Day 11">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>storage, PVCs, PVs, StatefulSet concepts</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>deploy Postgres with persistent storage</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>inspect PVC and PV behavior</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>debug volume attach or access mode issues</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>treat stateful workloads differently from stateless ones</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you understand storage lifecycle and persistent state</li>
+      </ul>
+      <h2 id="day-12">Day 12<a class="heading-anchor" href="#day-12" aria-label="Link to Day 12">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>RBAC, ServiceAccounts, least privilege</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>create separate ServiceAccounts for different workloads</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>use <code>kubectl auth can-i</code></li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>grant the wrong role and observe the effect</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>never use cluster-admin for routine app access</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can reason about access boundaries</li>
+      </ul>
+      <h2 id="day-13">Day 13<a class="heading-anchor" href="#day-13" aria-label="Link to Day 13">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>NetworkPolicies and workload isolation</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>restrict app-to-app access</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>test allowed vs denied traffic</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>debug a network policy that blocks the app</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>isolate internal communication paths when it matters</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can secure pod-to-pod traffic</li>
+      </ul>
+      <h2 id="day-14">Day 14<a class="heading-anchor" href="#day-14" aria-label="Link to Day 14">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>logging, events, observability, metrics, alerting</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>inspect logs, events, and pod health for a failing app</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>trace a slow application to a root cause</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>explain the difference between logs, metrics, and events</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>use observable facts, not assumptions, for debugging</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can systematically investigate application issues</li>
+      </ul>
+      <h2 id="day-15">Day 15<a class="heading-anchor" href="#day-15" aria-label="Link to Day 15">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>Helm basics and packaging patterns</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>turn a small app into a Helm chart</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>install and upgrade a release</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>compare Helm values for dev vs prod</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>keep templates readable and values explicit</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can package a Kubernetes app with Helm</li>
+      </ul>
+      <h2 id="day-16">Day 16<a class="heading-anchor" href="#day-16" aria-label="Link to Day 16">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>CI/CD integration for Kubernetes</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>a simple pipeline that builds an image and deploys it</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>check the rollout status after deployment</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>deploy a tag mismatch and debug it</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>use immutable image tags and approval gates</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can connect code delivery to Kubernetes deployments</li>
+      </ul>
+      <h2 id="day-17">Day 17<a class="heading-anchor" href="#day-17" aria-label="Link to Day 17">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>security hardening, image scanning, and RBAC review</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>harden the app manifests in a small cluster</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>review security posture and find issues</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>identify critical problems in a sample deployment</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>secure the cluster and workloads at the same time</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can do a basic production security review</li>
+      </ul>
+      <h2 id="day-18">Day 18<a class="heading-anchor" href="#day-18" aria-label="Link to Day 18">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>advanced networking and ingress patterns</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>public traffic to a Next.js app under an Ingress</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>route different paths to different services</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>debug a missing backend host or incorrect path rule</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>avoid exposing unnecessary workloads externally</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can route HTTP traffic correctly and safely</li>
+      </ul>
+      <h2 id="day-19">Day 19<a class="heading-anchor" href="#day-19" aria-label="Link to Day 19">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>debugging broken systems using kubectl and cluster signals</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>intentionally break and repair a ClusterIP, readiness, or DNS issue</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>use events, describe, logs, endpoints, and exec</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>troubleshoot a real incident in under 20 minutes</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>be systematic and evidence-driven</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can debug a live Kubernetes incident confidently</li>
+      </ul>
+      <h2 id="day-20">Day 20<a class="heading-anchor" href="#day-20" aria-label="Link to Day 20">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>production readiness review</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>review your app for security, reliability, and observability gaps</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>write a checklist for production readiness</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>identify the top 5 issues in a sample deployment</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>treat production readiness as a living quality gate</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can judge whether a deployment is close to production</li>
+      </ul>
+      <h2 id="day-21">Day 21<a class="heading-anchor" href="#day-21" aria-label="Link to Day 21">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>GitOps and declarative deployment patterns</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>version control all resources and review diffs</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>design a deployment workflow for dev/stage/prod</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>explain why declarative state is safer than imperative actions</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>keep deployment state visible in Git</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can reason about GitOps-friendly Kubernetes workflows</li>
+      </ul>
+      <h2 id="day-22">Day 22<a class="heading-anchor" href="#day-22" aria-label="Link to Day 22">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>autoscaling, load testing, and saturation patterns</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>apply HPA and test under load</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>see bottlenecks in app, database, or memory usage</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>explain why scaling once is not always enough</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>validate before and after scaling with evidence</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can scale based on real system behavior</li>
+      </ul>
+      <h2 id="day-23">Day 23<a class="heading-anchor" href="#day-23" aria-label="Link to Day 23">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>reliability, graceful shutdown, and disruption planning</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>simulate pod deletion and verify app resilience</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>watch startup and shutdown sequence</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>explain why graceful shutdown matters</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>design for disruption, not just uptime</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can reason about deploy-time and runtime disruption</li>
+      </ul>
+      <h2 id="day-24">Day 24<a class="heading-anchor" href="#day-24" aria-label="Link to Day 24">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>database and cache integration on Kubernetes</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>connect backend to PostgreSQL and Redis</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>check app startup, health, and connectivity</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>debug failed DB or cache connection logic</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>keep stateful dependencies explicit and observable</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can integrate data services on Kubernetes</li>
+      </ul>
+      <h2 id="day-25">Day 25<a class="heading-anchor" href="#day-25" aria-label="Link to Day 25">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>TLS, ingress, and system boundary design</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>add TLS termination and secure routing</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>verify host rules and certificate wiring</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>explain internal vs external traffic exposure</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>expose only the interfaces your app truly needs</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can design a secure external edge pattern</li>
+      </ul>
+      <h2 id="day-26">Day 26<a class="heading-anchor" href="#day-26" aria-label="Link to Day 26">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>production-grade architecture review</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>review your app with a production checklist</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>identify missing security, network, or stability controls</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>decide which protections are must-haves vs nice-to-haves</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>prioritize risk reduction over complexity</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can make sensible production trade-offs</li>
+      </ul>
+      <h2 id="day-27">Day 27<a class="heading-anchor" href="#day-27" aria-label="Link to Day 27">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>full-stack app deployment on Kubernetes</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>deploy the full frontend + backend + data stack together</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>ensure routes, health, and dependencies all work</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>debug a cross-service failure in a realistic stack</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>build services with clean boundaries and explicit dependencies</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can deploy a realistic multi-service app</li>
+      </ul>
+      <h2 id="day-28">Day 28<a class="heading-anchor" href="#day-28" aria-label="Link to Day 28">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>production operations, incident response, and rollback strategy</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>prepare a rollback procedure for a release candidate</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>test rollback and outage recovery workflow</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>decide when to rollback vs fix in place</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>always have a safe rollback path</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can operate Kubernetes under pressure</li>
+      </ul>
+      <h2 id="day-29">Day 29<a class="heading-anchor" href="#day-29" aria-label="Link to Day 29">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>capstone challenge service design and release packaging</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>architecture and manifests for your final app</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>review config, security, and operations</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>build a complete production-style Kubernetes deployment plan</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>design for clarity, resilience, and maintainability</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you can assemble a deployable Kubernetes system from requirements</li>
+      </ul>
+      <h2 id="day-30">Day 30<a class="heading-anchor" href="#day-30" aria-label="Link to Day 30">#</a></h2>
+      <p>Learn:</p>
+      <ul>
+      <li>final production polish and practical review</li>
+      </ul>
+      <p>Build:</p>
+      <ul>
+      <li>finalize the full project and compare with the reference design</li>
+      </ul>
+      <p>Practice:</p>
+      <ul>
+      <li>run a full production-readiness review</li>
+      </ul>
+      <p>Challenge:</p>
+      <ul>
+      <li>identify what remains to improve in your deployment</li>
+      </ul>
+      <p>Best Practice:</p>
+      <ul>
+      <li>keep learning through real incidents and real workloads</li>
+      </ul>
+      <p>Expected outcome:</p>
+      <ul>
+      <li>you have usable Kubernetes engineering judgment for real work</li>
+      </ul>
+      <hr>
+      <h1 id="final-mindset">Final mindset<a class="heading-anchor" href="#final-mindset" aria-label="Link to Final mindset">#</a></h1>
+      <p>Kubernetes is not about memorizing concepts. It is about understanding how systems converge toward desired state, how workloads are scheduled, how network identity works, how failures surface, and how teams create resilient operations.</p>
+      <p>The goal is not to know every API object by heart. The goal is to be able to:</p>
+      <ul>
+      <li>understand Kubernetes architecture</li>
+      <li>deploy real applications</li>
+      <li>write Kubernetes manifests</li>
+      <li>debug broken workloads</li>
+      <li>manage configuration and secrets</li>
+      <li>scale applications</li>
+      <li>secure workloads</li>
+      <li>use Helm</li>
+      <li>build Kubernetes CI/CD</li>
+      <li>understand production architecture</li>
+      <li>recognize bad Kubernetes practices</li>
+      <li>make strong production decisions</li>
+      </ul>
+      <p>This is the difference between knowing Kubernetes as a concept and being able to ship and operate workloads on it.</p>
+      <hr>
+      <h2 id="recommended-next-steps">Recommended next steps<a class="heading-anchor" href="#recommended-next-steps" aria-label="Link to Recommended next steps">#</a></h2>
+      <ol>
+      <li>Start local: create a kind or Docker Desktop cluster.</li>
+      <li>Deploy a tiny app: NGINX or a Spring Boot REST API.</li>
+      <li>Add Service + Ingress.</li>
+      <li>Add ConfigMap + Secret + probes.</li>
+      <li>Add resources + autoscaling.</li>
+      <li>Build a real multi-service app using the project architecture above.</li>
+      <li>Break and debug intentionally.</li>
+      <li>Package with Helm.</li>
+      <li>Add CI/CD.</li>
+      <li>Review production readiness.</li>
+      </ol>
+      <p>If you do just one thing every day, do the following:</p>
+      <ul>
+      <li>inspect a resource</li>
+      <li>apply a manifest</li>
+      <li>debug a failure</li>
+      <li>fix it and understand why</li>
+      </ul>
+      <p>That is how you become effective with Kubernetes.</p>
+    </article>
+  </main>
+  <footer>Rendered from <strong>kubernetes-practical-bootcamp.md</strong>. Edit the Markdown source, then rerun <code>ruby render_handbook.rb</code> to refresh this page.</footer>
+</body>
+</html>
